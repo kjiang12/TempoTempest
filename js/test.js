@@ -1,4 +1,7 @@
 var myGamePiece;
+window.onload = function() {
+	startGame();
+};
 
 function startGame() {
 	myGamePiece = new component(30, 30, "red", 10, 120);
