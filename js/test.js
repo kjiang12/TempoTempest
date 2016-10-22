@@ -189,7 +189,7 @@ function component(width, height, color) {
 					if (platforms[i].id != currentId) {
 						isPlaying = false;
 					}
-					if (!isPlaying) {
+					if (!isPlaying && this.speedY >= 0) {
 						synth.triggerAttack(platforms[i].note);
 						currentId = platforms[i].id;
 					}
