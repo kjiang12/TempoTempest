@@ -72,7 +72,13 @@ function component(width, height, color) {
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     this.newPos = function() {
-        this.x += this.speedX;
+        if (!(this.x < 0 || this.x + this.width > canvas.width)) {
+			this.x += this.speedX;
+		} else if (this.x < 0) {
+			this.x = 0;
+		} else if (this.x + this.width > canvas.width) {
+			this.x = canvas.width - this.width;
+		}
         this.y += this.speedY; 
 		
 		this.onGround = false;
