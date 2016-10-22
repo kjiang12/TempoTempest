@@ -27,10 +27,13 @@ window.onload = function(){
 }
 
 function playNote() {
-	//play a middle 'C' for the duration of an 8th note
-	synth.triggerAttackRelease("C4", "8n");
-	
-	
+	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
+	chord.triggerAttack(["C4", "E4", "G3"], 0);
+	chord.triggerRelease(["C4", "E4", "G3"], 1.75);
+	chord.triggerAttack(["D4", "F#4", "A3"], 1.80);
+	chord.triggerRelease(["D4", "F#4", "A3"], 3.5);
+	chord.triggerAttack(["G4", "B3", "D4"], 3.55);
+	chord.triggerRelease(["G4", "B3", "D4"], 5.25);
 };
 
 function handleFileSelect(evt) {
