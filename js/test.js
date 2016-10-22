@@ -11,6 +11,8 @@ var noteArray;
 window.onload = function(){
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
+	canvas.width = 1000;
+	canvas.height = 600;
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
@@ -74,8 +76,6 @@ function startGame() {
 var firstRun = true;
 var gameArea = {
 	start : function() {
-		canvas.width = 1000;
-		canvas.height = 600;
 		this.context = canvas.getContext("2d");
 	    window.addEventListener('keydown', function (e) {
             gameArea.keys = (gameArea.keys || []);
@@ -145,6 +145,9 @@ function component(width, height, color) {
         ctx = gameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.fillStyle = "black";
+		ctx.font="20px Georgia";
+		ctx.fillText(score, 10, 30);
     }
     this.update = function(dt) {
         this.y += this.speedY * dt; 
@@ -170,6 +173,7 @@ function component(width, height, color) {
 		gamePiece.y = 120;
 		gamePiece.speedY = 0;
 		gamePiece.onGround = true;
+		score = 0;
 	}
 }
 
