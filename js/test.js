@@ -12,11 +12,8 @@ var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
 var animationId;
-var notes = [];
-var chord = new Tone.PolySynth(20, Tone.AMSynth).toMaster();
 
 window.onload = function(){
-	genAllVar();
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
 	canvas.height = window.innerHeight * 0.75;
@@ -26,21 +23,18 @@ window.onload = function(){
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
-	document.getElementById("Restart").addEventListener("click", function(){
-		startGame();
-	});
 	playNote();
-
+	//startGame();
 }
 
 function playNote() {
-	var chord1 = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
-	chord1.triggerAttack(["C4", "E4", "G3"], .5);
-	chord1.triggerRelease(["C4", "E4", "G3"], 2.25);
-	chord1.triggerAttack(["D4", "F#4", "A3"], 2.30);
-	chord1.triggerRelease(["D4", "F#4", "A3"], 4);
-	chord1.triggerAttack(["G4", "B3", "D4"], 4.05);
-	chord1.triggerRelease(["G4", "B3", "D4"], 5.55);
+	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
+	chord.triggerAttack(["C4", "E4", "G3"], .5);
+	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
+	chord.triggerAttack(["D4", "F#4", "A3"], 2.30);
+	chord.triggerRelease(["D4", "F#4", "A3"], 4);
+	chord.triggerAttack(["G4", "B3", "D4"], 4.05);
+	chord.triggerRelease(["G4", "B3", "D4"], 5.55);
 };
 
 function handleFileSelect(evt) {
@@ -68,9 +62,12 @@ function parseFile(file){
 	//read the file
 	var reader = new FileReader();
 	reader.onload = function(e){
+		var display = MidiConvert.parse(e.target.result).tracks
+		//window.alert(JSON.stringify(display));
 		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		
 		parseNotes(partsData);
-
+		generatePlatforms(noteArray);
 	};
 	reader.readAsBinaryString(file);
 }
@@ -78,9 +75,9 @@ function parseFile(file){
 function parseNotes(notes){
 	var array = [];
 	for (i = 0; i < notes.length; i+=4){
-		array.push([notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity]);
+		array.push([notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name]);
 	}
-	
+
 	noteArray = array;
 	startGame();
 }
@@ -92,12 +89,12 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300, 30, 'E'));
-	
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
 	gameArea.keys = [];
 	gameArea.start();
 }
 		
+var firstRun = true;
 var gameArea = {
 	start : function() {
 		this.context = canvas.getContext("2d");
@@ -108,8 +105,10 @@ var gameArea = {
         window.addEventListener('keyup', function (e) {
             gameArea.keys[e.keyCode] = false; 
         })
-		gameArea.run();
-		
+		if (firstRun) {
+			gameArea.run();
+			firstRun = false;
+		}
 	},
 	clear : function(){
 		this.context.clearRect(0, 0, canvas.width, canvas.height);
@@ -120,14 +119,6 @@ var gameArea = {
 		
 		//Garbage collection
 		deletePlatforms(platforms);
-		
-		//Add platform
-		if (currTime - prevTime > 500) {
-			var notesArr = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4'];
-			var nt = notesArr[parseInt(Math.random()*7)];
-			platforms.push(new generatePlatform(true, gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, nt));
-			prevTime = currTime;
-		}
 
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
 		gamePiece.speedY = Math.min(gamePiece.speedY, 1.5);
@@ -182,52 +173,36 @@ function component(width, height, color) {
 		ctx.fillStyle = "black";
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 10, 30);
+		
     }
     this.update = function(dt) {
         this.y += this.speedY * dt; 
 		
 		this.onGround = false;
 		var doClear = true;
-		var linkedPlatforms = [];
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
-				getLinkedPlatforms(linkedPlatforms, this.x, this.width);
-				for (j = 0; j < linkedPlatforms.length; j++) {
-					if (!(notes.includes(linkedPlatforms[j].note))) {
-						notes.push(linkedPlatforms[j].note);
-					}
-					linkedPlatforms[j].setColor("blue");
-				}
-				if (linkedPlatforms.length > 0) {
-					score += linkedPlatforms.length;
-					// Is the player still on the platform that triggered the link/sound?
+				platforms[i].setColor("blue");
+				if (platforms[i].givePoint) {
+					score += 1;
 					if (platforms[i].id != currentId) {
 						isPlaying = false;
 					}
 					if (!isPlaying) {
-						chord.triggerAttack(notes);
+						synth.triggerAttack(platforms[i].note);
 						currentId = platforms[i].id;
 					}
 					doClear = false;
 					isPlaying = true;
 				}
 			} else {
-				var doChange = true;
-				for (j = 0; j < linkedPlatforms.length; j++) {
-					if (linkedPlatforms[j].id == platforms[i].id) {
-						doChange = false;
-					}
-				}
-				if (doChange) {
-					platforms[i].setColor("green");
-				}
+				platforms[i].setColor("green");
 			}
 		}
 		
 		if (doClear) {
-			chord.triggerRelease(allNotes);
-			notes = [];
+			synth.triggerRelease();
 			isPlaying = false;
 		}
 		
@@ -268,13 +243,14 @@ function deletePlatforms(arr) {
 		}
 	}
 }
-
-function getLinkedPlatforms(arr, x, width) {
-	for (k = 0; k < platforms.length; k++) {
-		if (platforms[k].givePoint && platforms[k].x <= x + width/2 && platforms[k].x + platforms[k].width >= x + width/2) {
-			arr.push(platforms[k]);
-		}
+function generatePlatforms(array) {
+//notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name
+	for(i = 0; i < array.length; i++) {
+		var random = parseInt(Math.random()*20);
+		
+		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], (array[i][0] * 10) - 300 - random * 10, array[i][2] * 150, array[i][3], array[i][4]));
 	}
+
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
@@ -287,34 +263,28 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.color = "green";
 	this.volume = volume;
 	this.note = note;
+	
 	this.update = function(dt){
 		this.x -= 1.3 * dt;
 	}
 	this.draw = function() {
 		ctx = gameArea.context;
-		ctx.fillStyle = this.color;
+		
+		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
+		grd.addColorStop(0,"rgb(parseInt(Math.random()*255), parseInt(Math.random()*255), parseInt(Math.random()*255))");
+		grd.addColorStop(1,"white");
+		ctx.fillStyle = grd;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	this.setColor = function(color) {
 		this.color = color;
 	}
 }
+
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('Score').innerHTML = "You got " + score + " points!"
-	document.getElementById('GameEnd').style.display = "inline";
-}
+	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
+	$("#Score").modal('show');
 
-var allNotes = [];
-var alph = ["A", "B", "C", "D", "E", "F", "G"];
-var pit = ["b", "", "#"]
-
-function genAllVar() {
-	for (oct = 0; oct < 15; oct++) {
-		for (ind = 0; ind < 7; ind++) {
-			for (p = 0; p < 3; p++) {
-				allNotes.push(alph[ind]+oct+pit[p]);
-			}
-		}
-	}
+	//gameArea.addEventListener("click", startGame());
 }
