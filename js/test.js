@@ -37,6 +37,31 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
+function parseFile(file){
+	//read the file
+	var reader = new FileReader();
+	reader.onload = function(e){
+		// var transportData = MidiConvert.parseResults(e.target.result);
+		// $("#ResultsOutput").val(JSON.stringify(transportData, undefined, 2));
+
+		//	var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"][1].name;
+		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+				
+		var arr = parseNotes(partsData);
+		//$("#ResultsText").val(JSON.stringify(partsData, undefined, 2));
+		$("#ResultsText").val(JSON.stringify(arr));
+		};
+		reader.readAsBinaryString(file);
+	}
+			
+function parseNotes(notes){
+	var array = [];
+	for (i = 0; i < notes.length; i+=4){
+		array.push([notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity]);
+	}
+	return array;
+}
+
 function startGame() {
 	gamePiece.restart();
 	currTime = 0;
