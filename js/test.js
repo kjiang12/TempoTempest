@@ -37,7 +37,7 @@ var myGameArea = {
 		canvas.width = 1000;
 		canvas.height = 720;
 		this.context = canvas.getContext("2d");
-		this.interval = setInterval(updateGameArea, 1);
+		this.interval = setInterval(updateGameArea, 5);
 	    window.addEventListener('keydown', function (e) {
             myGameArea.keys = (myGameArea.keys || []);
             myGameArea.keys[e.keyCode] = true;
@@ -79,7 +79,7 @@ var arr = [];
 var b = true;
 function updateGameArea() {
 	if (b) {
-		arr.push(new generatePlatform(500, 500, 100));
+		arr.push(new generatePlatform(500, 500, 10000));
 		b = false;
 	}
 	
@@ -91,10 +91,10 @@ function updateGameArea() {
 	}
 
 	if (myGamePiece.onGround) {myGamePiece.speedY = 0; }
-	else {myGamePiece.speedY += .0049; }
-	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = -0.5; }
-    if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
-    if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
+	else {myGamePiece.speedY += .0259; }
+	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = -2; }
+    if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3.5; }
+    if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3.5; }
     myGamePiece.newPos(); 
     myGamePiece.update();
 }
@@ -113,7 +113,7 @@ function generatePlatform(x, y, width) {
 	this.width = width;
 	this.height = 15;
 	this.update = function() {
-		this.x--;
+		this.x -= 1.3;
 		ctx = myGameArea.context;
 		ctx.fillStyle = "green";
         ctx.fillRect(this.x, this.y, this.width, this.height);
