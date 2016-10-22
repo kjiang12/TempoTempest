@@ -184,10 +184,13 @@ function component(width, height, color) {
 		grad.addColorStop(0, "white");
 		grad.addColorStop(1, "#abfcdd");
         ctx.fillStyle = grad;
+		ctx.shadowBlur = 10;
+		ctx.shadowColor = "#abfcdd";
 		ctx.fill();
 		//ctx.stroke();
         //ctx.fillRect(this.x, this.y, this.width, this.height);
 		//ctx.fillStyle = "black";
+		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 10, 30);
 		
@@ -239,7 +242,7 @@ function component(width, height, color) {
 }
 
 function isOnGround(myPiece, platform) {
-	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
+	if (myPiece.x < platform.x || myPiece.x > platform.x + platform.width) {return false; }
 	
 	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {
 		myPiece.y = platform.y - myPiece.height;
