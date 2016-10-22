@@ -1,11 +1,11 @@
-var myGamePiece;
+var gamePiece;
 var canvas;
 var dropZone;
 var music;
-var gameIsRunning;
-var arr = [];
 var currTime = 0;
 var prevTime = 0;
+var platforms;
+var timer;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -13,7 +13,7 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
-	arr.push(new generatePlatform(10, 180, 300));
+	gamePiece = new component(30, 30, "red");
 	startGame();
 }
 
@@ -25,7 +25,6 @@ function handleFileSelect(evt) {
     document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + music.name.split(".")[0] + '</h1>';
 	dropZone.style.display = 'none';
 	startGame();
-
  }
 
 function handleDragOver(evt) {
@@ -35,106 +34,115 @@ function handleDragOver(evt) {
 }
 
 function startGame() {
-	myGamePiece = new component(30, 30, "red", 10, 120);
-	myGameArea.start();
+	gamePiece.restart();
+	timer = 0;
+	platforms = [];
+	platforms.push(new generatePlatform(canvas.width/2, 180, 300));
+	gameArea.keys = [];
+	gameArea.start();
 }
 
-var myGameArea = {
+var gameArea = {
 	start : function() {
 		canvas.width = 1000;
-		canvas.height = 720;
+		canvas.height = 600;
 		this.context = canvas.getContext("2d");
 	    window.addEventListener('keydown', function (e) {
-            myGameArea.keys = (myGameArea.keys || []);
-            myGameArea.keys[e.keyCode] = true;
-        });
+            gameArea.keys = (gameArea.keys || []);
+            gameArea.keys[e.keyCode] = true;
+        })
         window.addEventListener('keyup', function (e) {
-            myGameArea.keys[e.keyCode] = false; 
-        });
-		myGameArea.run();
+            gameArea.keys[e.keyCode] = false; 
+        })
+		gameArea.run();
 	},
 	clear : function(){
 		this.context.clearRect(0, 0, canvas.width, canvas.height);
 	},
 	update : function(dt) {
 		//Clear screen
-		myGameArea.clear();
+		gameArea.clear();
 		
 		//Garbage collection
-		for(var i = arr.length - 1; i > 0; i--){
-			if(arr[i].outOfBounds()){
-				arr.splice(i, 1);
-			}
-		}
+		deletePlatforms(platforms);
 		
 		//Add platform
 		if (currTime - prevTime > 500) {
-			arr.push(new generatePlatform(myGamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
+			platforms.push(new generatePlatform(gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
 			prevTime = currTime;
 		}
 		
 		
-		myGamePiece.speedX = 0;
-		myGamePiece.speedY += (myGamePiece.onGround ? -myGamePiece.speedY : Math.min(0.339, 2));
+		gamePiece.speedX = 0;
+		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : Math.min(0.339, 2));
 		
-		if(myGameArea.keys){
-			if(myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = -4; }
-			if(myGameArea.keys[40] && !myGamePiece.onGround) {myGamePiece.speedY = 3; }
-			if(myGameArea.keys[37]) {myGamePiece.speedX = -2; }
-			if(myGameArea.keys[39]) {myGamePiece.speedX = 2; }
+		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
+		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
+			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
+				gamePiece.speedY = 1;
+				gamePiece.update(dt);
+			}
+		}
+		if (gameArea.keys && gameArea.keys[37]) {movePlatforms(platforms, .9); }
+		if (gameArea.keys && gameArea.keys[39]) {movePlatforms(platforms, -.9); }
+		
+		
+		for (i = 0; i < platforms.length; i++) {
+			platforms[i].update(dt);
+			platforms[i].draw();
 		}
 		
-		
-		myGamePiece.update(dt); 
-		myGamePiece.draw();
-		
-		for (i = 0; i < arr.length; i++) {
-			arr[i].update(dt);
-			arr[i].draw();
-		}
+		gamePiece.update(dt); 
+		gamePiece.draw();
 	},
 	run : function() {
-		requestAnimationFrame(myGameArea.run);
-		var now = Date.now(), dt = (now - (currTime || now)) * 0.17;
-		myGameArea.update(dt);
+		requestAnimationFrame(gameArea.run);
+		var now = Date.now(), dt = (now - (currTime || now)) * 0.15;
+		gameArea.update(dt);
 		currTime = now;
 	
 	}
 }
 
-function component(width, height, color, x, y) {
+function component(width, height, color) {
     this.width = width;
     this.height = height;
-    this.speedX = 0;
+   // this.speedX = 0;
     this.speedY = 0;
 	this.onGround = true;
-    this.x = x;
-    this.y = y; 
+    this.x = (canvas.width-this.width)/2;
+    this.y = 120; 
     this.draw = function() {
-        ctx = myGameArea.context;
+        ctx = gameArea.context;
         ctx.fillStyle = color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     this.update = function(dt) {
-        this.x += this.speedX * dt;
         this.y += this.speedY * dt; 
 		
-		this.onGround = false
-		;
-		for (i = 0; i < arr.length; i++) {
-			if (isOnGround(myGamePiece, arr[i])) {
+		this.onGround = false;
+		for (i = 0; i < platforms.length; i++) {
+			if (isOnGround(gamePiece, platforms[i])) {
 				this.onGround = true;
-				arr[i].setColor("blue");
+				platforms[i].setColor("blue");
 			} else {
-				arr[i].setColor("green");
+				platforms[i].setColor("green");
 			}
 		}
-		if (this.onGround) {
-			this.x -= 1.3 * dt;
+		
+		if (this.y + this.height > canvas.height) {
+			alert("Game over\nScore = "+timer);
+			gameOver();
 		}
     } 
+	this.restart = function() {
+		gamePiece.x = (canvas.width-this.width)/2;
+		gamePiece.y = 120;
+	//	gamePiece.speedX = 0;
+		gamePiece.speedY = 0;
+		gamePiece.onGround = true;
+	}
 }
-
 
 function isOnGround(myPiece, platform) {
 	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
@@ -145,6 +153,20 @@ function isOnGround(myPiece, platform) {
 	}
 	
 	return false;
+}
+
+function movePlatforms(arr, spd) {
+	for (i = 0; i < arr.length; i++) {
+		platforms[i].x -= spd;
+	}
+}
+
+function deletePlatforms(arr) {
+	for (i = arr.length - 1; i >= 0; i--) {
+		if (platforms[i].x + platforms[i].width < 0) {
+			arr.splice(i, 1);
+		}
+	}
 }
 
 function generatePlatform(x, y, width, volume, note) {
@@ -159,17 +181,15 @@ function generatePlatform(x, y, width, volume, note) {
 		this.x -= 1.3 * dt;
 	}
 	this.draw = function() {
-		ctx = myGameArea.context;
+		ctx = gameArea.context;
 		ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 	this.setColor = function(color) {
 		this.color = color;
 	}
-	this.outOfBounds = function(){
-		if (this.x + this.width < 0){
-			return true;
-		}
-		return false;
-	}
+}
+
+function gameOver() {
+	gameArea.addEventListener("click", startGame());
 }
