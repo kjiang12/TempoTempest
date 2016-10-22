@@ -36,6 +36,7 @@ function component(width, height, color, x, y) {
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
+	this.onGround = true;
     this.x = x;
     this.y = y; 
     this.update = function() {
@@ -61,5 +62,9 @@ function updateGameArea() {
 }
 
 function generatePlatform(x, y) {
-	
+	this.x = x;
+	this.y = y;
+	this.update = function() {
+		this.x -= 1;
+	}
 }
