@@ -19,3 +19,13 @@ canvas {
 body { 
     padding-top: 65px; 
 }
+
+#drop_zone {
+	border: 2px dashed #bbb;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	padding: 25px;
+	text-align: center;
+	color: #bbb;
+}

@@ -1,23 +1,31 @@
 var myGamePiece;
-var canvas = document.getElementById("Game");
-var timer;
+var canvas;
+var dropZone;
 
-function load() {
-    var finput = document.getElementById("data");
-    var editor = document.getElementById("editor");
-
-    var f = finput.files[0];
-
-    if (f) {
-        var r = new FileReader();
-        r.onload = function(e) { editor.innerHTML = e.target.result }
-        r.readAsText(f);
-		startGame();
-    } else { 
-		editor.innerHTML = "Failed to load file" 
-	}
+window.onload = function(){
+	canvas = document.getElementById("Game");
+	dropZone = document.getElementById('drop_zone');
+	dropZone.addEventListener('dragover', handleDragOver, false);
+	dropZone.addEventListener('drop', handleFileSelect, false);
 }
 
+function handleFileSelect(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+
+    var file = evt.dataTransfer.files[0]; // FileList object.
+	
+    document.getElementById('Title').innerHTML = '<h1>' + file.name + '</h1>';
+	startGame();
+  }
+
+function handleDragOver(evt) {
+	evt.stopPropagation();
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+}
+
+  
 function startGame() {
 	timer = 0;
 	myGamePiece = new component(30, 30, "red", 10, 120);
