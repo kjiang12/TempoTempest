@@ -23,12 +23,9 @@ window.onload = function(){
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
-	document.getElementById("Restart").addEventListener("click", function(){
-		startGame();
-	});
 
 	playNote();
-	//startGame();
+
 }
 
 function restartGame(){
@@ -281,5 +278,4 @@ function gameOver() {
 	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
 	
-	//gameArea.addEventListener("click", startGame());
 }
