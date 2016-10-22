@@ -273,7 +273,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p class='centered'>Game over\nScore = " + score + "<\p>";
+	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
 
 	//gameArea.addEventListener("click", startGame());
