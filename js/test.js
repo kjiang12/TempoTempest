@@ -23,10 +23,15 @@ window.onload = function(){
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
+	document.getElementById("restart").addEventListener("click", restartGame, false);
 	playNote();
 	//startGame();
 }
 
+function restartGame(){
+	$("#Score").modal('hide');
+	startGame();
+}
 function playNote() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
@@ -270,11 +275,10 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		this.color = color;
 	}
 }
-
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
 	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
-
+	
 	//gameArea.addEventListener("click", startGame());
 }
