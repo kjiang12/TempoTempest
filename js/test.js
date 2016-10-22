@@ -15,7 +15,7 @@ function handleFileSelect(evt) {
     evt.preventDefault();
 
     music = evt.dataTransfer.files[0]; // FileList object.
-    document.getElementById('Title').innerHTML = '<h1>' + file.name.split(".")[0] + '</h1>';
+    document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + music.name.split(".")[0] + '</h1>';
 	dropZone.style.display = 'none';
 	startGame();
 
