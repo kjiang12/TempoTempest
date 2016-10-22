@@ -26,10 +26,15 @@ window.onload = function(){
 	document.getElementById("Restart").addEventListener("click", function(){
 		startGame();
 	});
-	playNote();
 
+	playNote();
+	//startGame();
 }
 
+function restartGame(){
+	$("#Score").modal('hide');
+	startGame();
+}
 function playNote() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
@@ -273,6 +278,8 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 }
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('Score').innerHTML = "You got " + score + " points!"
-	document.getElementById('GameEnd').style.display = "inline";
+	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
+	$("#Score").modal('show');
+	
+	//gameArea.addEventListener("click", startGame());
 }
