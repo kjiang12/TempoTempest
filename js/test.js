@@ -9,6 +9,8 @@ var platforms;
 var noteArray;
 var synth;
 var maxGap = 100; // Max jump height
+var isPlaying = false;
+var currentId = 0;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -21,7 +23,7 @@ window.onload = function(){
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
 	playNote();
-	//startGame();
+	startGame();
 }
 
 function playNote() {
@@ -111,7 +113,9 @@ var gameArea = {
 		
 		//Add platform
 		if (currTime - prevTime > 500) {
-			platforms.push(new generatePlatform(true, gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
+			var notesArr = ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5'];
+			var nt = notesArr[parseInt(Math.random()*7)];
+			platforms.push(new generatePlatform(true, gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, nt));
 			prevTime = currTime;
 		}
 
@@ -173,16 +177,31 @@ function component(width, height, color) {
         this.y += this.speedY * dt; 
 		
 		this.onGround = false;
+		var doClear = true;
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i])) {
 				this.onGround = true;
 				platforms[i].setColor("blue");
 				if (platforms[i].givePoint) {
 					score += 1;
+					if (platforms[i].id != currentId) {
+						isPlaying = false;
+					}
+					if (!isPlaying) {
+						synth.triggerAttack(platforms[i].note);
+						currentId = platforms[i].id;
+					}
+					doClear = false;
+					isPlaying = true;
 				}
 			} else {
 				platforms[i].setColor("green");
 			}
+		}
+		
+		if (doClear) {
+			synth.triggerRelease();
+			isPlaying = false;
 		}
 		
 		if (this.y + this.height > canvas.height) {
@@ -225,6 +244,7 @@ function deletePlatforms(arr) {
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
+	this.id = parseInt(Math.random()*12424121);
 	this.givePoint = givePoint;
 	this.x = x;
 	this.y = y;
