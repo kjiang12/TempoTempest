@@ -1,7 +1,6 @@
 var myGamePiece;
-var canvas = document.getElementById("Game");
-var timer;
 
+/*
 function load() {
     var finput = document.getElementById("data");
     var editor = document.getElementById("editor");
@@ -16,10 +15,15 @@ function load() {
     } else { 
 		editor.innerHTML = "Failed to load file" 
 	}
-}
+}*/
+
+var canvas;
+window.onload = function() {
+	canvas = document.getElementById("Game");
+	startGame();
+};
 
 function startGame() {
-	timer = 0;
 	myGamePiece = new component(30, 30, "red", 10, 120);
 	myGameArea.start();
 }
