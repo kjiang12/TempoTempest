@@ -71,7 +71,6 @@ function parseFile(file){
 		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
 		
 		parseNotes(partsData);
-		generatePlatforms(noteArray);
 	};
 	reader.readAsBinaryString(file);
 }
@@ -94,6 +93,7 @@ function startGame() {
 	score = 0;
 	platforms = [];
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
+	generatePlatforms(noteArray);
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -121,7 +121,7 @@ var gameArea = {
 		deletePlatforms(platforms);
 
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
-		gamePiece.speedY = Math.min(gamePiece.speedY, 1.5);
+		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
 		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
@@ -168,9 +168,13 @@ function component(width, height, color) {
 	this.color = color;
     this.draw = function() {
         ctx = gameArea.context;
+		ctx.beginPath();
+		ctx.arc(this.x, this.y, this.height, 0, 2 * Math.PI, false);
         ctx.fillStyle = this.color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-		ctx.fillStyle = "black";
+		ctx.fill();
+		//ctx.stroke();
+        //ctx.fillRect(this.x, this.y, this.width, this.height);
+		//ctx.fillStyle = "black";
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 10, 30);
 		
