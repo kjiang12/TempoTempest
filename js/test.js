@@ -98,7 +98,6 @@ function startGame() {
 	gameArea.start();
 }
 		
-var firstRun = true;
 var gameArea = {
 	start : function() {
 		this.context = canvas.getContext("2d");
@@ -109,10 +108,7 @@ var gameArea = {
         window.addEventListener('keyup', function (e) {
             gameArea.keys[e.keyCode] = false; 
         })
-		if (firstRun) {
-			gameArea.run();
-			firstRun = false;
-		}
+		gameArea.run();
 	},
 	clear : function(){
 		this.context.clearRect(0, 0, canvas.width, canvas.height);
