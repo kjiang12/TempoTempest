@@ -4,7 +4,6 @@ var timer
 window.onload = function() {
 	canvas = document.getElementById("Game");
 	startGame();
-	timer = 0
 };
 
 function startGame() {
@@ -57,10 +56,11 @@ function component(width, height, color, x, y) {
 }
 
 var arr = [];
+var b = true;
 function updateGameArea() {
-	if (timer % 200 == 0) {
+	if (b) {
 		arr.push(new generatePlatform(500, 500, 100));
-		timer = 0
+		b = false;
 	}
 	
     myGameArea.clear();
@@ -71,17 +71,16 @@ function updateGameArea() {
 	}
 
 	if (myGamePiece.onGround) {myGamePiece.speedY = 0; }
-	else {myGamePiece.speedY = myGamePiece.speedY+.0049; }
+	else {myGamePiece.speedY += .0049; }
 	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = 10; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
     myGamePiece.newPos(); 
     myGamePiece.update();
-	timer++;
 }
 
 function isOnGround(myPiece, platform) {
-	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + len) {return false; }
+	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
 	
 	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {return true; }
 	
