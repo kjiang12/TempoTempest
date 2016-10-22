@@ -1,5 +1,8 @@
 var myGamePiece;
+var canvas;
 window.onload = function() {
+	alert("Hello");
+	canvas = document.getElementById("Game");
 	startGame();
 };
 
@@ -9,12 +12,12 @@ function startGame() {
 }
 
 var myGameArea = {
-	canvas : document.createElement("canvas"),
+
 	start : function() {
-		this.canvas.width = 1000;
-		this.canvas.height = 720;
-		this.context = this.canvas.getContext("2d");
-		document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+		canvas.width = 1000;
+		canvas.height = 720;
+		this.context = canvas.getContext("2d");
+		document.body.insertBefore(canvas, document.body.childNodes[0]);
 		this.interval = setInterval(updateGameArea, 1);
 	    window.addEventListener('keydown', function (e) {
             myGameArea.keys = (myGameArea.keys || []);
@@ -25,7 +28,7 @@ var myGameArea = {
         })
 	},
 	clear : function(){
-		this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+		this.context.clearRect(0, 0, canvas.width, canvas.height);
 	}
 }
 
@@ -51,7 +54,7 @@ function updateGameArea() {
     myGameArea.clear();
     myGamePiece.speedX = 0;
     myGamePiece.speedY = myGamePiece.speedY+.0049; 
-	if (myGamePiece.y >= this.canvas.height - myGamePiece.height) {myGamePiece.speedY = 0}
+	if (myGamePiece.y >= canvas.height - myGamePiece.height) {myGamePiece.speedY = 0}
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
     myGamePiece.newPos(); 
