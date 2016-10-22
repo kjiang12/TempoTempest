@@ -7,6 +7,7 @@ var startTime = 0;
 var score;
 var platforms;
 var noteArray;
+var synth;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -17,8 +18,17 @@ window.onload = function(){
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
+	synth = new Tone.Synth().toMaster();
+	playNote();
 	//startGame();
 }
+
+function playNote() {
+	//play a middle 'C' for the duration of an 8th note
+	synth.triggerAttackRelease("C4", "8n");
+	
+	
+};
 
 
 function handleFileSelect(evt) {
@@ -59,7 +69,6 @@ function parseNotes(notes){
 	}
 	
 	noteArray = array;
-	startGame();
 }
 
 function startGame() {
