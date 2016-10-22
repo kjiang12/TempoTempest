@@ -8,6 +8,7 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
+	arr.push(new generatePlatform(10, 180, 300));
 }
 
 function handleFileSelect(evt) {
@@ -91,7 +92,7 @@ function updateGameArea() {
 	}
 
 	if (myGamePiece.onGround) {myGamePiece.speedY = 0; }
-	else {myGamePiece.speedY += .0259; }
+	else {myGamePiece.speedY += .0339; }
 	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = -2; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3.5; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3.5; }
