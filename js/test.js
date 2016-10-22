@@ -6,7 +6,7 @@ var prevTime = 0;
 var startTime = 0;
 var score;
 var platforms;
-var notes;
+var noteArray;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -15,20 +15,21 @@ window.onload = function(){
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "red");
-	startGame();
+	//startGame();
 }
+
 
 function handleFileSelect(evt) {
     evt.stopPropagation();
     evt.preventDefault();
-
-    music = evt.dataTransfer.files[0]; // FileList object.
-    document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + music.name.split(".")[0] + '</h1>';
 	
-	notes = parseNotes(MidiConvert.parse(music.target.result).tracks[1]["notes"]);
-	
+	var files = evt.dataTransfer.files;
+	if (files.length > 0){
+		var file = files[0];
+		document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + file.name.split(".")[0] + '</h1>';
+		parseFile(file);
+	}
 	dropZone.style.display = 'none';
-	startGame();
  }
 
 function handleDragOver(evt) {
@@ -37,12 +38,25 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
+
+function parseFile(file){
+	//read the file
+	var reader = new FileReader();
+	reader.onload = function(e){
+		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		parseNotes(partsData);
+
+	};
+	reader.readAsBinaryString(file);
+}
+	
 function parseNotes(notes){
 	var array = [];
 	for (i = 0; i < notes.length; i+=4){
 		array.push([notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity]);
 	}
-	return array;
+	
+	noteArray = array;
 }
 
 function startGame() {
