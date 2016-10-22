@@ -181,7 +181,7 @@ function component(width, height, color) {
 		this.onGround = false;
 		var doClear = true;
 		for (i = 0; i < platforms.length; i++) {
-			if (isOnGround(gamePiece, platforms[i])) {
+			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
 				platforms[i].setColor("blue");
 				if (platforms[i].givePoint) {
@@ -189,7 +189,7 @@ function component(width, height, color) {
 					if (platforms[i].id != currentId) {
 						isPlaying = false;
 					}
-					if (!isPlaying && this.speedY >= 0) {
+					if (!isPlaying) {
 						synth.triggerAttack(platforms[i].note);
 						currentId = platforms[i].id;
 					}
