@@ -89,6 +89,7 @@ function component(width, height, color) {
 		}
 		
 		if (this.y + this.height > canvas.height) {
+			alert("Game over\nScore = "+timer);
 			gameOver();
 		}
     } 
