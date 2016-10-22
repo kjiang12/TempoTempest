@@ -8,6 +8,7 @@ var score;
 var platforms;
 var noteArray;
 var synth;
+var maxGap = 100; // Max jump height
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -114,7 +115,8 @@ var gameArea = {
 			prevTime = currTime;
 		}
 
-		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : Math.min(0.239, 1.5));
+		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
+		gamePiece.speedY = Math.min(gamePiece.speedY, 1.5);
 		
 		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
