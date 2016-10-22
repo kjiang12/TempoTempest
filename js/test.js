@@ -12,6 +12,7 @@ var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
 var animationId;
+var incJumpLocs = [];
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -95,6 +96,7 @@ function startGame() {
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
 	generatePlatforms(noteArray);
 	gameArea.keys = [];
+	incJumpLocs = [];
 	gameArea.start();
 }
 		
@@ -123,7 +125,9 @@ var gameArea = {
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
 		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
-		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
+		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
+			gamePiece.speedY = incJumpLocs.includes(gamePiece.onTile) ? -10 : -4;
+		}
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
@@ -166,6 +170,7 @@ function component(width, height, color) {
     this.x = (canvas.width-this.width)/2;
     this.y = 120; 
 	this.color = color;
+	this.onTile = -1;
     this.draw = function() {
         ctx = gameArea.context;
 		ctx.beginPath();
@@ -190,6 +195,7 @@ function component(width, height, color) {
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
+				this.onTile = i;
 				platforms[i].setColor(true);
 				if (platforms[i].givePoint) {
 					score += 1;
@@ -205,6 +211,7 @@ function component(width, height, color) {
 				}
 			} else {
 				platforms[i].setColor(false);
+				this.onTile = -1;
 			}
 		}
 		
@@ -258,6 +265,15 @@ function generatePlatforms(array) {
 		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], (array[i][0] * 10) - 300 - random * 10, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
+	checkPlatforms();
+}
+
+function checkPlatforms() {
+	for (i = 0; i < platforms.length - 1; i++) {
+		if (platforms[i].y - platforms[i+1].y > 90) {
+			incJumpLocs.push(i);
+		}
+	}
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
