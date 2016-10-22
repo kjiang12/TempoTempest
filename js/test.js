@@ -138,6 +138,7 @@ function updateGameArea() {
     if (gameArea.keys && gameArea.keys[37]) {movePlatforms(platforms, .9); }
     if (gameArea.keys && gameArea.keys[39]) {movePlatforms(platforms, -.9); }
 	
+	deletePlatforms(platforms);
     gamePiece.newPos(); 
     gamePiece.update();
 }
@@ -156,6 +157,14 @@ function isOnGround(myPiece, platform) {
 function movePlatforms(arr, spd) {
 	for (i = 0; i < arr.length; i++) {
 		platforms[i].x -= spd;
+	}
+}
+
+function deletePlatforms(arr) {
+	for (i = arr.length - 1; i >= 0; i--) {
+		if (platforms[i].x + platforms[i].width < 0) {
+			arr.splice(i, 1);
+		}
 	}
 }
 
