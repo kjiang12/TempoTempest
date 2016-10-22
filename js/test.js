@@ -23,7 +23,7 @@ window.onload = function(){
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
 	playNote();
-	startGame();
+	//startGame();
 }
 
 function playNote() {
@@ -72,6 +72,7 @@ function parseNotes(notes){
 	}
 	
 	noteArray = array;
+	startGame();
 }
 
 function startGame() {
