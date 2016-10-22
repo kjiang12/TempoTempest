@@ -187,7 +187,7 @@ function component(width, height, color) {
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
-				platforms[i].setColor("blue");
+				platforms[i].setColor(true);
 				if (platforms[i].givePoint) {
 					score += 1;
 					if (platforms[i].id != currentId) {
@@ -201,7 +201,7 @@ function component(width, height, color) {
 					isPlaying = true;
 				}
 			} else {
-				platforms[i].setColor("green");
+				platforms[i].setColor(false);
 			}
 		}
 		
@@ -264,7 +264,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.y = y;
 	this.width = width;
 	this.height = 15;
-	this.color = "green";
+	this.gradOne = false;
 	this.volume = volume;
 	this.note = note;
 	
@@ -275,13 +275,18 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		ctx = gameArea.context;
 		
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
-		grd.addColorStop(0,"rgb(parseInt(Math.random()*255), parseInt(Math.random()*255), parseInt(Math.random()*255))");
-		grd.addColorStop(1,"white");
+		if (this.gradOne) {
+			grd.addColorStop(0,"rgb("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255+")"));
+			grd.addColorStop(1,"white");
+		} else {
+			grd.addColorStop(0, "black");
+			grd.addColorStop(1, "black");
+		}
 		ctx.fillStyle = grd;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
-	this.setColor = function(color) {
-		this.color = color;
+	this.setColor = function(gradOne) {
+		this.gradOne = gradOne;
 	}
 }
 
