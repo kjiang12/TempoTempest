@@ -78,17 +78,19 @@ function component(width, height, color, x, y) {
 				arr[i].setColor("green");
 			}
 		}
+		if (this.onGround) {
+			this.x -= 1.3;
+		}
     } 
 }
 
 var arr = [];
-var b = true;
+var timer = 0;
 function updateGameArea() {
-	if (b) {
-		arr.push(new generatePlatform(500, 500, 10000));
-		b = false;
+	if (timer % 150 == 0) {
+		arr.push(new generatePlatform(myGamePiece.x+Math.random()*100+150, Math.random()*50+300, 100));
 	}
-	
+	timer++;
     myGameArea.clear();
     myGamePiece.speedX = 0;
 	
@@ -102,6 +104,7 @@ function updateGameArea() {
 		myGamePiece.speedY += .0339;
 	}
 	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = -2; }
+	if (myGameArea.keys && myGameArea.keys[40] && !myGamePiece.onGround) {myGamePiece.speedY = 5; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3.5; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3.5; }
     myGamePiece.newPos(); 
@@ -111,7 +114,10 @@ function updateGameArea() {
 function isOnGround(myPiece, platform) {
 	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
 	
-	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {return true; }
+	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {
+		myPiece.y = platform.y - myPiece.height;
+		return true;
+	}
 	
 	return false;
 }
