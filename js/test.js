@@ -57,6 +57,7 @@ function parseNotes(notes){
 	}
 	
 	noteArray = array;
+	startGame();
 }
 
 function startGame() {
