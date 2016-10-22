@@ -17,6 +17,7 @@ function handleFileSelect(evt) {
 	
     document.getElementById('Title').innerHTML = '<h1>' + file.name + '</h1>';
 	startGame();
+	dropZone.style.display = 'none';
   }
 
 function handleDragOver(evt) {
@@ -35,7 +36,6 @@ var myGameArea = {
 		canvas.width = 1000;
 		canvas.height = 720;
 		this.context = canvas.getContext("2d");
-		document.body.insertBefore(canvas, document.body.childNodes[0]);
 		this.interval = setInterval(updateGameArea, 1);
 	    window.addEventListener('keydown', function (e) {
             myGameArea.keys = (myGameArea.keys || []);
