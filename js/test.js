@@ -69,6 +69,7 @@ function component(width, height, color, x, y) {
 }
 
 var arr = [];
+var b = true;
 function updateGameArea() {
 	if (b) {
 		arr.push(new generatePlatform(500, 500, 100));
@@ -92,7 +93,7 @@ function updateGameArea() {
 }
 
 function isOnGround(myPiece, platform) {
-	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + len) {return false; }
+	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
 	
 	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {return true; }
 	
