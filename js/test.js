@@ -88,7 +88,7 @@ var arr = [];
 var timer = 0;
 function updateGameArea() {
 	if (timer % 150 == 0) {
-		arr.push(new generatePlatform(myGamePiece.x+Math.random()*100+150, Math.random()*50+300, 100));
+		arr.push(new generatePlatform(myGamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
 	}
 	timer++;
     myGameArea.clear();
