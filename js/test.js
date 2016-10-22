@@ -122,12 +122,14 @@ function isOnGround(myPiece, platform) {
 	return false;
 }
 
-function generatePlatform(x, y, width) {
+function generatePlatform(x, y, width, volume, note) {
 	this.x = x;
 	this.y = y;
 	this.width = width;
 	this.height = 15;
 	this.color = "green";
+	this.volume = volume;
+	this.note = note;
 	this.update = function() {
 		this.x -= 1.3;
 		ctx = myGameArea.context;
