@@ -50,7 +50,7 @@ function component(width, height, color, x, y) {
 function updateGameArea() {
     myGameArea.clear();
     myGamePiece.speedX = 0;
-    myGamePiece.speedY = myGamePiece.speedY+.49; 
+    myGamePiece.speedY = myGamePiece.speedY+.0049; 
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
     myGamePiece.newPos(); 
