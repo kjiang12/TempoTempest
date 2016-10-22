@@ -51,6 +51,7 @@ function updateGameArea() {
     myGameArea.clear();
     myGamePiece.speedX = 0;
     myGamePiece.speedY = myGamePiece.speedY+.0049; 
+	if (myGamePiece.y >= this.canvas.height - myGamePiece.height) {myGamePiece.speedY = 0}
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
     myGamePiece.newPos(); 
