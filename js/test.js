@@ -23,7 +23,9 @@ window.onload = function(){
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
-	document.getElementById("Restart").addEventListener("click", startGame, false);
+	document.getElementById("Restart").addEventListener("click", function(){
+		startGame();
+	});
 	playNote();
 
 }
@@ -88,11 +90,11 @@ function startGame() {
 	score = 0;
 	platforms = [];
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300, 30, 'E'));
+	
 	gameArea.keys = [];
 	gameArea.start();
 }
 		
-var firstRun = true;
 var gameArea = {
 	start : function() {
 		this.context = canvas.getContext("2d");
@@ -103,10 +105,8 @@ var gameArea = {
         window.addEventListener('keyup', function (e) {
             gameArea.keys[e.keyCode] = false; 
         })
-		if (firstRun) {
-			gameArea.run();
-			firstRun = false;
-		}
+		gameArea.run();
+		
 	},
 	clear : function(){
 		this.context.clearRect(0, 0, canvas.width, canvas.height);
