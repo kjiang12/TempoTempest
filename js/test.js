@@ -1,7 +1,6 @@
 var myGamePiece;
 var canvas;
 window.onload = function() {
-	alert("Hello");
 	canvas = document.getElementById("Game");
 	startGame();
 };
