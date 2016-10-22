@@ -1,12 +1,12 @@
 var gamePiece;
 var canvas;
 var dropZone;
-var music;
 var currTime = 0;
 var prevTime = 0;
 var startTime = 0;
 var score;
 var platforms;
+var notes;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -24,8 +24,8 @@ function handleFileSelect(evt) {
 
     music = evt.dataTransfer.files[0]; // FileList object.
     document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + music.name.split(".")[0] + '</h1>';
-	var reader = new FileReader();
-	music = reader.readAsBinaryString(music);
+	
+	notes = parseNotes(MidiConvert.parse(music.target.result).tracks[1]["notes"]);
 	
 	dropZone.style.display = 'none';
 	startGame();
@@ -37,23 +37,6 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
-function parseFile(file){
-	//read the file
-	var reader = new FileReader();
-	reader.onload = function(e){
-		// var transportData = MidiConvert.parseResults(e.target.result);
-		// $("#ResultsOutput").val(JSON.stringify(transportData, undefined, 2));
-
-		//	var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"][1].name;
-		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
-				
-		var arr = parseNotes(partsData);
-		//$("#ResultsText").val(JSON.stringify(partsData, undefined, 2));
-		$("#ResultsText").val(JSON.stringify(arr));
-		};
-		reader.readAsBinaryString(file);
-	}
-			
 function parseNotes(notes){
 	var array = [];
 	for (i = 0; i < notes.length; i+=4){
