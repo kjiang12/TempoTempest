@@ -4,8 +4,8 @@ var dropZone;
 var music;
 var currTime = 0;
 var prevTime = 0;
+var startTime = 0;
 var platforms;
-var timer;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -35,13 +35,15 @@ function handleDragOver(evt) {
 
 function startGame() {
 	gamePiece.restart();
-	timer = 0;
+	currTime = 0;
+	prevTime = 0;
+	startTime = Date.now();
 	platforms = [];
 	platforms.push(new generatePlatform(canvas.width/2, 180, 300));
 	gameArea.keys = [];
 	gameArea.start();
 }
-
+var firstRun = true;
 var gameArea = {
 	start : function() {
 		canvas.width = 1000;
@@ -54,7 +56,10 @@ var gameArea = {
         window.addEventListener('keyup', function (e) {
             gameArea.keys[e.keyCode] = false; 
         })
-		gameArea.run();
+		if (firstRun) {
+			gameArea.run();
+			firstRun = false;
+		}
 	},
 	clear : function(){
 		this.context.clearRect(0, 0, canvas.width, canvas.height);
@@ -71,10 +76,8 @@ var gameArea = {
 			platforms.push(new generatePlatform(gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
 			prevTime = currTime;
 		}
-		
-		
-		gamePiece.speedX = 0;
-		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : Math.min(0.339, 2));
+
+		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : Math.min(0.239, 2));
 		
 		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
@@ -99,15 +102,13 @@ var gameArea = {
 		requestAnimationFrame(gameArea.run);
 		var now = Date.now(), dt = (now - (currTime || now)) * 0.15;
 		gameArea.update(dt);
-		currTime = now;
-	
+		currTime = now;	
 	}
 }
 
 function component(width, height, color) {
     this.width = width;
     this.height = height;
-   // this.speedX = 0;
     this.speedY = 0;
 	this.onGround = true;
     this.x = (canvas.width-this.width)/2;
@@ -131,14 +132,13 @@ function component(width, height, color) {
 		}
 		
 		if (this.y + this.height > canvas.height) {
-			alert("Game over\nScore = "+timer);
+			alert("Game over\nScore = "+(currTime-startTime));
 			gameOver();
 		}
     } 
 	this.restart = function() {
 		gamePiece.x = (canvas.width-this.width)/2;
 		gamePiece.y = 120;
-	//	gamePiece.speedX = 0;
 		gamePiece.speedY = 0;
 		gamePiece.onGround = true;
 	}
@@ -157,7 +157,7 @@ function isOnGround(myPiece, platform) {
 
 function movePlatforms(arr, spd) {
 	for (i = 0; i < arr.length; i++) {
-		platforms[i].x -= spd;
+		platforms[i].x += spd;
 	}
 }
 
