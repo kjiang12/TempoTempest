@@ -1,12 +1,10 @@
 canvas {
-    border:1px solid #d3d3d3;
-    background-color: #f1f1f1;
+    border:3px solid #42e5f4;
 	padding-left: 0;
     padding-right: 0;
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 1200px;
 }
 .container {
 	padding-left: 0;
@@ -14,10 +12,12 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 1200px;
+    width: 1000px;
 }
 body { 
-    padding-top: 65px; 
+	background-color: #42f4d7;
+    padding-top: 20px; 
+	padding-bottom: 20px; 
 }
 
 #drop_zone {
@@ -27,5 +27,21 @@ body {
 	border-radius: 5px;
 	padding: 25px;
 	text-align: center;
+
 	color: #bbb;
+	width: 50%;
+	height: 30%;
+}
+
+#drop_zone > p{
+	font-size : 300%;
+	font-weight: bold;
+	color : White;
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

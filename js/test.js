@@ -15,8 +15,8 @@ var currentId = 0;
 window.onload = function(){
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
+	canvas.height = window.innerHeight * 0.75;
 	canvas.width = 1000;
-	canvas.height = 600;
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
@@ -33,7 +33,6 @@ function playNote() {
 	
 };
 
-
 function handleFileSelect(evt) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -41,10 +40,11 @@ function handleFileSelect(evt) {
 	var files = evt.dataTransfer.files;
 	if (files.length > 0){
 		var file = files[0];
-		document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + file.name.split(".")[0] + '</h1>';
+		document.getElementById('Title').innerHTML = '<h3>' + "Now playing - " + file.name.split(".")[0] + '</h3>';
 		parseFile(file);
 	}
 	dropZone.style.display = 'none';
+	canvas.style.display = 'inline';
  }
 
 function handleDragOver(evt) {
@@ -85,6 +85,7 @@ function startGame() {
 	gameArea.keys = [];
 	gameArea.start();
 }
+		
 var firstRun = true;
 var gameArea = {
 	start : function() {
