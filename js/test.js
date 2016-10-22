@@ -11,6 +11,7 @@ var synth;
 var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
+var animationId;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -155,7 +156,7 @@ var gameArea = {
 		gamePiece.draw();
 	},
 	run : function() {
-		requestAnimationFrame(gameArea.run);
+		animationId = requestAnimationFrame(gameArea.run);
 		var now = Date.now(), dt = (now - (currTime || now)) * 0.15;
 		gameArea.update(dt);
 		currTime = now;	
@@ -210,7 +211,6 @@ function component(width, height, color) {
 		}
 		
 		if (this.y + this.height > canvas.height) {
-			alert("Game over\nScore = "+score);
 			gameOver();
 		}
     } 
@@ -272,5 +272,9 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 }
 
 function gameOver() {
-	gameArea.addEventListener("click", startGame());
+	window.cancelAnimationFrame(animationId);
+	document.getElementById('content').innerHTML = "<p class='centered'>Game over\nScore = " + score + "<\p>";
+	$("#Score").modal('show');
+
+	//gameArea.addEventListener("click", startGame());
 }

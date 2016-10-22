@@ -49,6 +49,19 @@
 		<output id="Title"></output>
 		<canvas style="display:none;" id="Game"></canvas>
 	</div>
+	<div class="modal fade centered" tabindex="-1" id="Score" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body" id="content">
+					<p>One fine body</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" onclick"startGame()">Retry</button>
+					<button type="button" class="btn btn-default" onclick="location.reload()">New Game</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 </body>
 
 </html>
