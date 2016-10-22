@@ -29,12 +29,12 @@ window.onload = function(){
 
 function playNote() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
-	chord.triggerAttack(["C4", "E4", "G3"], 0);
-	chord.triggerRelease(["C4", "E4", "G3"], 1.75);
-	chord.triggerAttack(["D4", "F#4", "A3"], 1.80);
-	chord.triggerRelease(["D4", "F#4", "A3"], 3.5);
-	chord.triggerAttack(["G4", "B3", "D4"], 3.55);
-	chord.triggerRelease(["G4", "B3", "D4"], 5.25);
+	chord.triggerAttack(["C4", "E4", "G3"], .5);
+	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
+	chord.triggerAttack(["D4", "F#4", "A3"], 2.30);
+	chord.triggerRelease(["D4", "F#4", "A3"], 4);
+	chord.triggerAttack(["G4", "B3", "D4"], 4.05);
+	chord.triggerRelease(["G4", "B3", "D4"], 5.55);
 };
 
 function handleFileSelect(evt) {
