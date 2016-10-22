@@ -12,8 +12,11 @@ var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
 var animationId;
+var notes = [];
+var chord = new Tone.PolySynth(20, Tone.AMSynth).toMaster();
 
 window.onload = function(){
+	genAllVar();
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
 	canvas.height = window.innerHeight * 0.75;
@@ -31,13 +34,13 @@ window.onload = function(){
 }
 
 function playNote() {
-	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
-	chord.triggerAttack(["C4", "E4", "G3"], .5);
-	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
-	chord.triggerAttack(["D4", "F#4", "A3"], 2.30);
-	chord.triggerRelease(["D4", "F#4", "A3"], 4);
-	chord.triggerAttack(["G4", "B3", "D4"], 4.05);
-	chord.triggerRelease(["G4", "B3", "D4"], 5.55);
+	var chord1 = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
+	chord1.triggerAttack(["C4", "E4", "G3"], .5);
+	chord1.triggerRelease(["C4", "E4", "G3"], 2.25);
+	chord1.triggerAttack(["D4", "F#4", "A3"], 2.30);
+	chord1.triggerRelease(["D4", "F#4", "A3"], 4);
+	chord1.triggerAttack(["G4", "B3", "D4"], 4.05);
+	chord1.triggerRelease(["G4", "B3", "D4"], 5.55);
 };
 
 function handleFileSelect(evt) {
@@ -185,29 +188,46 @@ function component(width, height, color) {
 		
 		this.onGround = false;
 		var doClear = true;
+		var linkedPlatforms = [];
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
-				platforms[i].setColor("blue");
-				if (platforms[i].givePoint) {
-					score += 1;
+				getLinkedPlatforms(linkedPlatforms, this.x, this.width);
+				for (j = 0; j < linkedPlatforms.length; j++) {
+					if (!(notes.includes(linkedPlatforms[j].note))) {
+						notes.push(linkedPlatforms[j].note);
+					}
+					linkedPlatforms[j].setColor("blue");
+				}
+				if (linkedPlatforms.length > 0) {
+					score += linkedPlatforms.length;
+					// Is the player still on the platform that triggered the link/sound?
 					if (platforms[i].id != currentId) {
 						isPlaying = false;
 					}
 					if (!isPlaying) {
-						synth.triggerAttack(platforms[i].note);
+						chord.triggerAttack(notes);
 						currentId = platforms[i].id;
 					}
 					doClear = false;
 					isPlaying = true;
 				}
 			} else {
-				platforms[i].setColor("green");
+				var doChange = true;
+				for (j = 0; j < linkedPlatforms.length; j++) {
+					if (linkedPlatforms[j].id == platforms[i].id) {
+						doChange = false;
+					}
+				}
+				if (doChange) {
+					platforms[i].setColor("green");
+				}
 			}
 		}
 		
 		if (doClear) {
-			synth.triggerRelease();
+			chord.triggerRelease(allNotes);
+			notes = [];
 			isPlaying = false;
 		}
 		
@@ -249,6 +269,14 @@ function deletePlatforms(arr) {
 	}
 }
 
+function getLinkedPlatforms(arr, x, width) {
+	for (k = 0; k < platforms.length; k++) {
+		if (platforms[k].givePoint && platforms[k].x <= x + width/2 && platforms[k].x + platforms[k].width >= x + width/2) {
+			arr.push(platforms[k]);
+		}
+	}
+}
+
 function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.id = parseInt(Math.random()*12424121);
 	this.givePoint = givePoint;
@@ -275,4 +303,18 @@ function gameOver() {
 	window.cancelAnimationFrame(animationId);
 	document.getElementById('Score').innerHTML = "You got " + score + " points!"
 	document.getElementById('GameEnd').style.display = "inline";
+}
+
+var allNotes = [];
+var alph = ["A", "B", "C", "D", "E", "F", "G"];
+var pit = ["b", "", "#"]
+
+function genAllVar() {
+	for (oct = 0; oct < 15; oct++) {
+		for (ind = 0; ind < 7; ind++) {
+			for (p = 0; p < 3; p++) {
+				allNotes.push(alph[ind]+oct+pit[p]);
+			}
+		}
+	}
 }
