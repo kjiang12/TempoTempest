@@ -1,6 +1,7 @@
 var myGamePiece;
 var canvas;
 var dropZone;
+var music;
 
 window.onload = function(){
 	canvas = document.getElementById("Game");
@@ -13,12 +14,12 @@ function handleFileSelect(evt) {
     evt.stopPropagation();
     evt.preventDefault();
 
-    var file = evt.dataTransfer.files[0]; // FileList object.
-	
+    music = evt.dataTransfer.files[0]; // FileList object.
     document.getElementById('Title').innerHTML = '<h1>' + file.name.split(".")[0] + '</h1>';
-	startGame();
 	dropZone.style.display = 'none';
-  }
+	startGame();
+
+ }
 
 function handleDragOver(evt) {
 	evt.stopPropagation();
