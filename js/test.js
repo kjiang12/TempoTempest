@@ -170,7 +170,10 @@ function component(width, height, color) {
         ctx = gameArea.context;
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.height, 0, 2 * Math.PI, false);
-        ctx.fillStyle = this.color;
+		var grad = ctx.createRadialGradient(this.x, this.y, this.height/3, this.x, this.y, this.height);
+		grad.addColorStop(0, "white");
+		grad.addColorStop(1, "#abfcdd");
+        ctx.fillStyle = grad;
 		ctx.fill();
 		//ctx.stroke();
         //ctx.fillRect(this.x, this.y, this.width, this.height);
