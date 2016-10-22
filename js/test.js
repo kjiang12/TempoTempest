@@ -5,6 +5,7 @@ var music;
 var currTime = 0;
 var prevTime = 0;
 var startTime = 0;
+var score;
 var platforms;
 
 window.onload = function(){
@@ -38,6 +39,7 @@ function startGame() {
 	currTime = 0;
 	prevTime = 0;
 	startTime = Date.now();
+	score = 0;
 	platforms = [];
 	platforms.push(new generatePlatform(canvas.width/2, 180, 300));
 	gameArea.keys = [];
@@ -126,13 +128,14 @@ function component(width, height, color) {
 			if (isOnGround(gamePiece, platforms[i])) {
 				this.onGround = true;
 				platforms[i].setColor("blue");
+				score += 1;
 			} else {
 				platforms[i].setColor("green");
 			}
 		}
 		
 		if (this.y + this.height > canvas.height) {
-			alert("Game over\nScore = "+(currTime-startTime));
+			alert("Game over\nScore = "+score);
 			gameOver();
 		}
     } 
