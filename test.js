@@ -62,7 +62,10 @@ function parseFile(file){
 	//read the file
 	var reader = new FileReader();
 	reader.onload = function(e){
+		var display = MidiConvert.parse(e.target.result).tracks
+		window.alert(JSON.stringify(display));
 		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		
 		parseNotes(partsData);
 		generatePlatforms(noteArray);
 	};
@@ -74,6 +77,7 @@ function parseNotes(notes){
 	for (i = 0; i < notes.length; i+=4){
 		array.push([notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name]);
 	}
+
 	noteArray = array;
 	startGame();
 }
@@ -85,7 +89,7 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300, 30, 'E'));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -243,7 +247,8 @@ function generatePlatforms(array) {
 //notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name
 	for(i = 0; i < array.length; i++) {
 		var random = parseInt(Math.random()*20);
-		platforms.push(new generatePlatform(true, 900 + 100 * array[i][1], (array[i][0] * 10) - 300 - random * 10, array[i][2] * 150, array[i][3], array[i][4]));
+		
+		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], (array[i][0] * 10) - 300 - random * 10, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
 }
