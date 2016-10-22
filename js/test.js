@@ -24,6 +24,9 @@ function handleFileSelect(evt) {
 
     music = evt.dataTransfer.files[0]; // FileList object.
     document.getElementById('Title').innerHTML = '<h1>' + "Now playing - " + music.name.split(".")[0] + '</h1>';
+	var reader = new FileReader();
+	music = reader.readAsBinaryString(music);
+	
 	dropZone.style.display = 'none';
 	startGame();
  }
