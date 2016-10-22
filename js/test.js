@@ -22,7 +22,7 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
-	gamePiece = new component(30, 30, "orangered");
+	gamePiece = new component(20, 20, "orangered");
 	synth = new Tone.Synth().toMaster();
 	playNote();
 	//startGame();
@@ -180,12 +180,12 @@ function component(width, height, color) {
         ctx = gameArea.context;
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.height, 0, 2 * Math.PI, false);
-		var grad = ctx.createRadialGradient(this.x, this.y, this.height/3, this.x, this.y, this.height);
+		var grad = ctx.createRadialGradient(this.x, this.y, this.height/4, this.x, this.y, this.height);
 		grad.addColorStop(0, "white");
-		grad.addColorStop(1, "#abfcdd");
+		grad.addColorStop(1, this.color);
         ctx.fillStyle = grad;
 		ctx.shadowBlur = 10;
-		ctx.shadowColor = "#abfcdd";
+		ctx.shadowColor = this.color;
 		ctx.fill();
 		//ctx.stroke();
         //ctx.fillRect(this.x, this.y, this.width, this.height);
