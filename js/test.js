@@ -16,7 +16,7 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
-	gamePiece = new component(30, 30, "red");
+	gamePiece = new component(30, 30, "orangered");
 	//startGame();
 }
 
@@ -69,7 +69,7 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(canvas.width/2, 180, 300));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300, 30, 'E'));
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -101,7 +101,7 @@ var gameArea = {
 		
 		//Add platform
 		if (currTime - prevTime > 500) {
-			platforms.push(new generatePlatform(gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
+			platforms.push(new generatePlatform(true, gamePiece.x+Math.random()*100+150, Math.random()*50+300, 100, 30, 'E'));
 			prevTime = currTime;
 		}
 
@@ -114,8 +114,16 @@ var gameArea = {
 				gamePiece.update(dt);
 			}
 		}
-		if (gameArea.keys && gameArea.keys[37]) {movePlatforms(platforms, .9); }
-		if (gameArea.keys && gameArea.keys[39]) {movePlatforms(platforms, -.9); }
+		gamePiece.color = "orangered";
+		if (gameArea.keys && gameArea.keys[37] && gameArea.keys[39]) {
+			
+		} else if (gameArea.keys && gameArea.keys[37]) {
+			movePlatforms(platforms, .9);
+			gamePiece.color = "salmon";
+		} else if (gameArea.keys && gameArea.keys[39]) {
+			movePlatforms(platforms, -.9);
+			gamePiece.color = "red";
+		}
 		
 		
 		for (i = 0; i < platforms.length; i++) {
@@ -141,9 +149,10 @@ function component(width, height, color) {
 	this.onGround = true;
     this.x = (canvas.width-this.width)/2;
     this.y = 120; 
+	this.color = color;
     this.draw = function() {
         ctx = gameArea.context;
-        ctx.fillStyle = color;
+        ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
 		ctx.fillStyle = "black";
 		ctx.font="20px Georgia";
@@ -157,7 +166,8 @@ function component(width, height, color) {
 			if (isOnGround(gamePiece, platforms[i])) {
 				this.onGround = true;
 				platforms[i].setColor("blue");
-				score += 1;
+					score += 1;
+				}
 			} else {
 				platforms[i].setColor("green");
 			}
@@ -202,7 +212,8 @@ function deletePlatforms(arr) {
 	}
 }
 
-function generatePlatform(x, y, width, volume, note) {
+function generatePlatform(givePoint, x, y, width, volume, note) {
+	this.givePoint = givePoint;
 	this.x = x;
 	this.y = y;
 	this.width = width;
