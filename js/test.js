@@ -107,7 +107,7 @@ var gameArea = {
 			prevTime = currTime;
 		}
 
-		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : Math.min(0.239, 2));
+		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : Math.min(0.239, 1.5));
 		
 		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
