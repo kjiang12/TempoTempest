@@ -89,7 +89,6 @@ function component(width, height, color) {
 		}
 		
 		if (this.y + this.height > canvas.height) {
-			alert("game over");
 			gameOver();
 		}
     } 
@@ -161,5 +160,5 @@ function generatePlatform(x, y, width, volume, note) {
 }
 
 function gameOver() {
-	gameArea.addEventListener("Restart", startGame());
+	gameArea.addEventListener("click", startGame());
 }
