@@ -166,6 +166,7 @@ function component(width, height, color) {
 			if (isOnGround(gamePiece, platforms[i])) {
 				this.onGround = true;
 				platforms[i].setColor("blue");
+				if (platforms[i].givePoint) {
 					score += 1;
 				}
 			} else {
