@@ -1,5 +1,6 @@
 var myGamePiece;
 var canvas = document.getElementById("Game");
+var timer;
 
 function load() {
     var finput = document.getElementById("data");
@@ -18,6 +19,7 @@ function load() {
 }
 
 function startGame() {
+	timer = 0;
 	myGamePiece = new component(30, 30, "red", 10, 120);
 	myGameArea.start();
 }
@@ -58,44 +60,42 @@ function component(width, height, color, x, y) {
     this.newPos = function() {
         this.x += this.speedX;
         this.y += this.speedY; 
+		
+		this.onGround = false;
+		for (i = 0; i < arr.length; i++) {
+			if (isOnGround(myGamePiece, arr[i])) {this.onGround = true; }
+		}
     } 
 }
 
-var timer = 0
 var arr = [];
 function updateGameArea() {
-	if (timer % 2000 == 0) {
-		arr.push(generatePlatform(1000, 720));
-	}
-	
-	/*for (var i = 0; i < arr.length; i++) {
-		arr[i].update();
+	if (b) {
+		arr.push(new generatePlatform(500, 500, 100));
+		b = false;
 	}
 	
     myGameArea.clear();
     myGamePiece.speedX = 0;
-    myGamePiece.speedY = myGamePiece.speedY+.0049; 
-
-	var onGround = false;
-	for (var i = 0; i < arr.length; i++) {
-		if (isOnGround(myGamePiece, arr[i]))
-			onGround = true;
-	}*/
 	
-	if (myGameArea.keys && myGameArea.keys[38] && onGround) {myGamePiece.speedY = 10; }
+	for (i = 0; i < arr.length; i++) {
+		arr[i].update();
+	}
+
+	if (myGamePiece.onGround) {myGamePiece.speedY = 0; }
+	else {myGamePiece.speedY += .0049; }
+	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = 10; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
     myGamePiece.newPos(); 
     myGamePiece.update();
-	timer += 1;
 }
 
 function isOnGround(myPiece, platform) {
-	if (!(myPiece.x + myPiece.width >= platform.x && myPiece.x <= platform.x + len))
-		return false;
+	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + len) {return false; }
 	
-	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height)
-		return true;
+	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {return true; }
+	
 	return false;
 }
 
@@ -105,9 +105,9 @@ function generatePlatform(x, y, width) {
 	this.width = width;
 	this.height = 15;
 	this.update = function() {
-		this.x -= 1;
+		this.x--;
 		ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, 15);
+		ctx.fillStyle = "green";
+        ctx.fillRect(this.x, this.y, this.width, this.height);
 	}
 }
