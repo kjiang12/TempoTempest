@@ -15,7 +15,7 @@ function handleFileSelect(evt) {
 
     var file = evt.dataTransfer.files[0]; // FileList object.
 	
-    document.getElementById('Title').innerHTML = '<h1>' + file.name + '</h1>';
+    document.getElementById('Title').innerHTML = '<h1>' + file.name.split(".")[0] + '</h1>';
 	startGame();
 	dropZone.style.display = 'none';
   }
