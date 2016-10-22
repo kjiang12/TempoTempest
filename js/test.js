@@ -126,7 +126,13 @@ var gameArea = {
 		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
 		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
-			gamePiece.speedY = incJumpLocs.includes(gamePiece.onTile) ? -10 : -4;
+			var jumpBoost = false;
+			for (i = 0; i < incJumpLocs; i++) {
+				if (gamePiece.onTile.id == incJumpLocs[i].id) {
+					jumpBoost = true;
+				}
+			}
+			gamePiece.speedY = jumpBoost ? -10 : -4;
 		}
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
@@ -144,7 +150,6 @@ var gameArea = {
 			movePlatforms(platforms, -.9);
 			gamePiece.color = "red";
 		}
-		
 		
 		for (i = 0; i < platforms.length; i++) {
 			platforms[i].update(dt);
@@ -195,7 +200,7 @@ function component(width, height, color) {
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
-				this.onTile = i;
+				this.onTile = platforms[i].id;
 				platforms[i].setColor(true);
 				if (platforms[i].givePoint) {
 					score += 1;
@@ -265,13 +270,17 @@ function generatePlatforms(array) {
 		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], (array[i][0] * 10) - 300 - random * 10, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
+	platforms.sort(function(a, b) {
+		return a.x - b.x;
+	});
 	checkPlatforms();
 }
 
 function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
-		if (platforms[i].y - platforms[i+1].y > 90) {
-			incJumpLocs.push(i);
+		if (platforms[i].y - platforms[i+1].y > 70) {
+			incJumpLocs.push(platforms[i].id);
+			console.log(platforms[i].id);
 		}
 	}
 }
