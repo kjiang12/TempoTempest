@@ -11,7 +11,6 @@ function startGame() {
 }
 
 var myGameArea = {
-
 	start : function() {
 		canvas.width = 1000;
 		canvas.height = 720;
@@ -50,21 +49,53 @@ function component(width, height, color, x, y) {
     } 
 }
 
+var timer = 0
+var arr = [];
 function updateGameArea() {
+	if (timer % 2000 == 0) {
+		arr.push(generatePlatform(1000, 720));
+	}
+	
+	for (int i = 0; i < arr.length; i++) {
+		arr[i].update();
+	}
+	
     myGameArea.clear();
     myGamePiece.speedX = 0;
     myGamePiece.speedY = myGamePiece.speedY+.0049; 
-	if (myGamePiece.y >= canvas.height - myGamePiece.height) {myGamePiece.speedY = 0}
+
+	var onGround = false;
+	for (int i = 0; i < arr.length; i++) {
+		if (isOnGround(myGamePiece, arr[i]))
+			onGround = true;
+	}
+	
+	if (myGameArea.keys && myGameArea.keys[38] && onGround) {myGamePiece.speedY = 10; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 2; }
     myGamePiece.newPos(); 
     myGamePiece.update();
+	timer += 1;
 }
 
-function generatePlatform(x, y) {
+function isOnGround(myPiece, platform) {
+	if (!(myPiece.x + myPiece.width >= platform.x && myPiece.x <= platform.x + len))
+		return false;
+	
+	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height)
+		return true;
+	return false;
+}
+
+function generatePlatform(x, y, width) {
 	this.x = x;
 	this.y = y;
+	this.width = width;
+	this.height = 15;
 	this.update = function() {
 		this.x -= 1;
+		ctx = myGameArea.context;
+        ctx.fillStyle = color;
+        ctx.fillRect(this.x, this.y, this.width, 15);
 	}
 }
