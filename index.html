@@ -20,47 +20,26 @@
 <script src="js/test.js"></script>
 
 <body>
-	<nav style="display:none;" class="navbar navbar-fixed-top navbar-default">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav navbar-right">
-			<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-			<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-			</ul>
-        </div><!-- /.nav-collapse -->
-      </div><!-- /.container -->
-    </nav><!-- /.navbar -->
 	<div class="container" id="TitleBar">
 		<img id="logo" src="images/Header_transparent.png" />
 	</div>
 	
 	<div class="container">
-		<div class="centered" id="drop_zone">
-			<p class="centered" >Select a midi file to get started!</p>
+		<div id="picker" class="container">
+			<div class="centered" id="drop_zone">
+				<p class="centered">Select a midi file to get started!</p>
+			</div>
+		</div>
+		<div id="GameEnd" class="centered" style="display:none;">
+			<h3> Game Over </h3>
+			<h6 id="Score"> </h6>
+			
+			<button id="Restart">Retry</button> <button onclick="location.reload()">New Game</button>
 		</div>
 		<output id="Title"></output>
 		<canvas style="display:none;" id="Game"></canvas>
 	</div>
-	<div class="modal fade centered" tabindex="-1" id="Score" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-body" id="content">
-				</div>
-				<div class="modal-footer">
-					<button id="restart" type="button" class="btn btn-default" onclick="restartGame()">Retry</button>
-					<button type="button" class="btn btn-default" onclick="location.reload()">New Game</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal-dialog -->
-	</div><!-- /.modal -->
+
 </body>
 
 </html>
