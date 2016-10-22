@@ -31,7 +31,7 @@ function startGame() {
 	gamePiece.restart();
 	timer = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(10, 180, 300));
+	platforms.push(new generatePlatform(canvas.width/2, 180, 300));
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -61,10 +61,10 @@ var gameArea = {
 function component(width, height, color) {
     this.width = width;
     this.height = height;
-    this.speedX = 0;
+   // this.speedX = 0;
     this.speedY = 0;
 	this.onGround = true;
-    this.x = 10;
+    this.x = (canvas.width-this.width)/2;
     this.y = 120; 
     this.update = function() {
         ctx = gameArea.context;
@@ -72,13 +72,13 @@ function component(width, height, color) {
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     this.newPos = function() {
-        if (!(this.x < 0 || this.x + this.width > canvas.width)) {
-			this.x += this.speedX;
-		} else if (this.x < 0) {
-			this.x = 0;
-		} else if (this.x + this.width > canvas.width) {
-			this.x = canvas.width - this.width;
-		}
+        //if (!(this.x < 0 || this.x + this.width > canvas.width)) {
+		//	this.x += this.speedX;
+		//} else if (this.x < 0) {
+		//	this.x = 0;
+		//} else if (this.x + this.width > canvas.width) {
+		//	this.x = canvas.width - this.width;
+		//}
         this.y += this.speedY; 
 		
 		this.onGround = false;
@@ -90,9 +90,9 @@ function component(width, height, color) {
 				platforms[i].setColor("green");
 			}
 		}
-		if (this.onGround) {
-			this.x -= 1.3;
-		}
+		//if (this.onGround) {
+	//		this.x -= 1.3;
+		//}
 		
 		if (this.y + this.height > canvas.height) {
 			alert("Game over\nScore = "+timer);
@@ -100,9 +100,9 @@ function component(width, height, color) {
 		}
     } 
 	this.restart = function() {
-		gamePiece.x = 10;
+		gamePiece.x = (canvas.width-this.width)/2;
 		gamePiece.y = 120;
-		gamePiece.speedX = 0;
+	//	gamePiece.speedX = 0;
 		gamePiece.speedY = 0;
 		gamePiece.onGround = true;
 	}
@@ -127,10 +127,16 @@ function updateGameArea() {
 	} else {
 		gamePiece.speedY += .0339;
 	}
-	if (gameArea.keys && gameArea.keys[38] && gamePiece.onGround) {gamePiece.speedY = -2; }
-	if (gameArea.keys && gameArea.keys[40] && !gamePiece.onGround) {gamePiece.speedY = 5; }
-    if (gameArea.keys && gameArea.keys[37]) {gamePiece.speedX = -3.5; }
-    if (gameArea.keys && gameArea.keys[39]) {gamePiece.speedX = 3.5; }
+	if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -2; }
+	if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
+		while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
+			gamePiece.speedY = 1;
+			gamePiece.newPos();
+			gamePiece.update();
+		}
+	}
+    if (gameArea.keys && gameArea.keys[37]) {movePlatforms(platforms, .9); }
+    if (gameArea.keys && gameArea.keys[39]) {movePlatforms(platforms, -.9); }
 	
     gamePiece.newPos(); 
     gamePiece.update();
@@ -145,6 +151,12 @@ function isOnGround(myPiece, platform) {
 	}
 	
 	return false;
+}
+
+function movePlatforms(arr, spd) {
+	for (i = 0; i < arr.length; i++) {
+		platforms[i].x -= spd;
+	}
 }
 
 function generatePlatform(x, y, width, volume, note) {
