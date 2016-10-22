@@ -1,9 +1,21 @@
 var myGamePiece;
-var canvas;
-window.onload = function() {
-	canvas = document.getElementById("Game");
-	startGame();
-};
+var canvas = document.getElementById("Game");
+
+function load() {
+    var finput = document.getElementById("data");
+    var editor = document.getElementById("editor");
+
+    var f = finput.files[0];
+
+    if (f) {
+        var r = new FileReader();
+        r.onload = function(e) { editor.innerHTML = e.target.result }
+        r.readAsText(f);
+		startGame();
+    } else { 
+		editor.innerHTML = "Failed to load file" 
+	}
+}
 
 function startGame() {
 	myGamePiece = new component(30, 30, "red", 10, 120);
@@ -56,7 +68,7 @@ function updateGameArea() {
 		arr.push(generatePlatform(1000, 720));
 	}
 	
-	for (int i = 0; i < arr.length; i++) {
+	/*for (var i = 0; i < arr.length; i++) {
 		arr[i].update();
 	}
 	
@@ -65,10 +77,10 @@ function updateGameArea() {
     myGamePiece.speedY = myGamePiece.speedY+.0049; 
 
 	var onGround = false;
-	for (int i = 0; i < arr.length; i++) {
+	for (var i = 0; i < arr.length; i++) {
 		if (isOnGround(myGamePiece, arr[i]))
 			onGround = true;
-	}
+	}*/
 	
 	if (myGameArea.keys && myGameArea.keys[38] && onGround) {myGamePiece.speedY = 10; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -2; }
