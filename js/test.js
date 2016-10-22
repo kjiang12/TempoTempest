@@ -71,7 +71,12 @@ function component(width, height, color, x, y) {
 		
 		this.onGround = false;
 		for (i = 0; i < arr.length; i++) {
-			if (isOnGround(myGamePiece, arr[i])) {this.onGround = true; }
+			if (isOnGround(myGamePiece, arr[i])) {
+				this.onGround = true;
+				arr[i].setColor("blue");
+			} else {
+				arr[i].setColor("green");
+			}
 		}
     } 
 }
@@ -91,8 +96,11 @@ function updateGameArea() {
 		arr[i].update();
 	}
 
-	if (myGamePiece.onGround) {myGamePiece.speedY = 0; }
-	else {myGamePiece.speedY += .0339; }
+	if (myGamePiece.onGround) {
+		myGamePiece.speedY = 0;
+	} else {
+		myGamePiece.speedY += .0339;
+	}
 	if (myGameArea.keys && myGameArea.keys[38] && myGamePiece.onGround) {myGamePiece.speedY = -2; }
     if (myGameArea.keys && myGameArea.keys[37]) {myGamePiece.speedX = -3.5; }
     if (myGameArea.keys && myGameArea.keys[39]) {myGamePiece.speedX = 3.5; }
@@ -113,10 +121,14 @@ function generatePlatform(x, y, width) {
 	this.y = y;
 	this.width = width;
 	this.height = 15;
+	this.color = "green";
 	this.update = function() {
 		this.x -= 1.3;
 		ctx = myGameArea.context;
-		ctx.fillStyle = "green";
+		ctx.fillStyle = this.color;
         ctx.fillRect(this.x, this.y, this.width, this.height);
+	}
+	this.setColor = function(color) {
+		this.color = color;
 	}
 }
