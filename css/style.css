@@ -2,11 +2,15 @@
     font-family: "Script";
     src: url(ChopinScript.ttf) format("truetype");
 }
+@font-face {
+    font-family: "Variane";
+    src: url(VarianeScript.ttf) format("truetype");
+}
 
 
 canvas {
 	background: url('../images/music-notes.jpg');
-    border:5px groove #06719e;
+    border:5px groove gold;
 	border-radius: 5px;
 	padding-left: 0;
     padding-right: 0;
@@ -63,7 +67,7 @@ html {
 	font-size : 300%;
 	font-weight: bold;
 	color: SaddleBrown;
-	font-family: Script;
+	font-family: Variane;
 }
 
 #drop_zone > input{
@@ -103,10 +107,11 @@ html {
 }
 #content {
 	text-align : center;
+	font-size: font-size;
 }
 
 .lose {
-	font-family: Script;
+	font-family: Variane;
 	background: #eeeeee; /* Old browsers */
 	background: -moz-linear-gradient(-45deg, #eeeeee 0%, #cccccc 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(-45deg, #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6 */
@@ -119,10 +124,11 @@ html {
 	background: -moz-linear-gradient(-45deg, #d4e4ef 0%, #86aecc 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(-45deg, #d4e4ef 0%,#86aecc 100%); /* Chrome10-25,Safari5.1-6 */
 	background: linear-gradient(135deg, #d4e4ef 0%,#86aecc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	ilter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 .win {
+	font-family: Variane;
 	background: #f3e2c7; /* Old browsers */
 	background: -moz-linear-gradient(-45deg, #f3e2c7 0%, #c19e67 50%, #b68d4c 51%, #e9d4b3 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(-45deg, #f3e2c7 0%,#c19e67 50%,#b68d4c 51%,#e9d4b3 100%); /* Chrome10-25,Safari5.1-6 */
