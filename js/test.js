@@ -21,7 +21,8 @@ var prevMusicArr = [];
 window.onload = function(){
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
-	canvas.height = window.innerHeight * 0.75;
+	canvas.height = window.innerHeight * 0.70;
+	
 	canvas.width = 1000;
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
@@ -53,7 +54,7 @@ function handleFileSelect(evt) {
 	var files = evt.dataTransfer.files;
 	if (files.length > 0){
 		var file = files[0];
-		document.getElementById('Title').innerHTML = '<h3>' + "Now playing - " + file.name.split(".")[0] + '</h3>';
+		document.getElementById('Title').innerHTML = '<h4>' + "Now playing - " + file.name.split(".")[0] + '</h4>';
 		parseFile(file);
 	}
 	dropZone.style.display = 'none';
