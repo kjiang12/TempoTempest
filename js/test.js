@@ -26,18 +26,17 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
-	gamePiece = new component(30, 30, "orangered");
+	gamePiece = new component(20, 20, "orangered");
 	//synth = new Tone.Synth().toMaster();
 	synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 	playNote();
-	//startGame();
 }
 
 function restartGame(){
 	$("#Score").modal('hide');
 	startGame();
 }
-function playNote() {
+function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
 	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
@@ -102,8 +101,9 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
 	generatePlatforms(noteArray);
+	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	
 	gameArea.keys = [];
@@ -273,24 +273,12 @@ function component(width, height, color) {
 }
 
 function isOnGround(myPiece, platform) {
-	var rectX = platform.x + platform.width/2;
-	var rectY = platform.y + platform.height/2;
-	
-	var distX = Math.abs(myPiece.x - rectX);
-	var distY = Math.abs(myPiece.y - rectY);
-	
-	if(distX > (platform.width/2 + myPiece.height) || distY > (platform.height/2 + myPiece.height) || myPiece.speedY < 0){
-		return false;
-	}
-	
-	if(distX <= platform.width/2 || distY <= platform.height/2){
+	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
+	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {
 		myPiece.y = platform.y - myPiece.height;
 		return true;
 	}
-	
-	var dx = distX - platform.width/2;
-	var dy = distY - platform.height/2;
-	return (dx*dx + dy*dy <= myPiece.height * myPiece.height);
+	return false;
 }
 
 function movePlatforms(arr, spd) {
@@ -310,8 +298,18 @@ function generatePlatforms(array) {
 //notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name
 	for(i = 0; i < array.length; i++) {
 		var random = parseInt(Math.random()*5);
-		
-		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 200 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
+		var x = canvas.width/2 + 300 + 300 * array[i][1];
+		var y = canvas.height - array[i][0] * 20 + 1000;
+		if (y < 50) {
+			y = 50;
+		}
+		if (y > canvas.height) {
+			y = canvas.height - 50;
+		}
+		var width = array[i][2] * 150;
+		var volume = array[i][3];
+		var note = array[i][4];
+		platforms.push(new generatePlatform(true, x, y, width, volume, note));
 	}
 
 	platforms.sort(function(a, b) {
@@ -383,7 +381,7 @@ function generateFlag(x,y) {
 			ctx.drawImage(flag, this.x, this.y);
 		} else {
 			flag.onload = function(){
-				ctx.drawImage(this.image, this.x, this.y);
+				ctx.drawImage(this.flag, this.x, this.y);
 			}
 		}
 		
@@ -393,6 +391,9 @@ function generateFlag(x,y) {
 }
 
 function win() {
+	synth.triggerRelease();
+	gamePiece.y = -50;
+	playVictory();
 	window.cancelAnimationFrame(animationId);
 	document.getElementById('content').innerHTML = "<p >Level Complete!\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
