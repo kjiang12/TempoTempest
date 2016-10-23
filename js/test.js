@@ -38,13 +38,9 @@ function restartGame(){
 	startGame();
 }
 function playVictory() {
-	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
-	chord.triggerAttack(["C4", "E4", "G3"], .5);
-	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
-	chord.triggerAttack(["D4", "F#4", "A3"], 2.30);
-	chord.triggerRelease(["D4", "F#4", "A3"], 4);
-	chord.triggerAttack(["G4", "B3", "D4"], 4.05);
-	chord.triggerRelease(["G4", "B3", "D4"], 5.55);
+	synth.triggerAttackRelease(["C4", "E4", "G3"], .5);
+	synth.triggerAttackRelease(["D4", "F#4", "A3"], 2.30);
+	synth.triggerAttackRelease(["G4", "B3", "D4"], 4.05);
 };
 
 function handleFileSelect(evt) {
@@ -390,12 +386,12 @@ function generateFlag(x,y) {
 }
 
 function win() {
-	synth.triggerRelease();
+	synth.triggerRelease(prevMusicArr);
 	gamePiece.y = -50;
-	playVictory();
 	window.cancelAnimationFrame(animationId);
 	document.getElementById('content').innerHTML = "<p >Level Complete!\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
+	playVictory();
 }
 
 function gameOver() {
