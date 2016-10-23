@@ -32,6 +32,7 @@
 	
 	<div class="container">
 		<div class="centered" id="drop_zone">
+			<input type="file" id="fileElem" multiple accept="image/*" style="display:none" onchange="handleFiles(this.files)">
 			<p class="centered" >Select a midi file to get started!</p>
 		</div>
 		<output id="Title"></output>
