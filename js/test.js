@@ -145,11 +145,11 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'DISPLAY'));
 	generatePlatforms(noteArray);
 	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
 	if (playThrough != 0) {
-		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'E1'));
+		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'DISPLAY'));
 	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
@@ -269,11 +269,13 @@ function component(width, height, color) {
 		this.onGround = false;
 		var doClear = true
 		var others = [];
+		var count = 0;
 		for (i = 0; i < platforms.length; i++) {
 			var currPlat = platforms[i];
 			if(this.x < currPlat.x + currPlat.width && this.x > currPlat.x){
-				if(!musicArr.includes(currPlat.note)){
+				if(!musicArr.includes(currPlat.note) && !(currPlat.note ===  'DISPLAY')){
 					musicArr.push(currPlat.note);
+					count++;
 				}
 			}
 			if (isOnGround(gamePiece, currPlat) && this.speedY >= 0) {
@@ -295,7 +297,9 @@ function component(width, height, color) {
 					if (!isPlaying) {
 						currentId = currPlat.id;
 					}
-					doClear = false;
+					if (!(currPlat.note ===  'DISPLAY' && count == 0)){
+						doClear = false;
+					}
 					isPlaying = true;
 				}
 			} else {
@@ -312,7 +316,7 @@ function component(width, height, color) {
 		}
 		
 		musicArr.sort();
-		
+		console.log(musicArr);
 		if(isPlaying && musicArr.toString() != prevMusicArr.toString()){
 			synth.triggerRelease(prevMusicArr);
 			synth.triggerAttack(musicArr);
@@ -324,6 +328,7 @@ function component(width, height, color) {
 		}
 		
 		if (doClear) {
+			count = 0;
 			for (i = 0; i < platforms.length && platforms[i].x < canvas.width; i++) {
 				platforms[i].setColor(false);
 			}
