@@ -166,7 +166,7 @@ function component(width, height, color) {
     this.speedY = 0;
 	this.onGround = true;
     this.x = (canvas.width-this.width)/2;
-    this.y = 120; 
+    this.y = 110; 
 	this.color = color;
     this.draw = function() {
         ctx = gameArea.context;
@@ -279,7 +279,9 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
   
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
 		if (this.gradOne) {
-			grd.addColorStop(0,"rgb("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255+")"));
+			ctx.shadowBlur = 5;
+			ctx.shadowColor = "yellow";
+			grd.addColorStop(0,"yellow");
 			grd.addColorStop(1,"white");
 		} else {
 			grd.addColorStop(0, "black");
@@ -287,6 +289,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		}
 		ctx.fillStyle = grd;
         ctx.fillRect(this.x, this.y, this.width, this.height);
+		ctx.shadowBlur = 0;
 	}
 	this.setColor = function(gradOne) {
 		this.gradOne = gradOne;
