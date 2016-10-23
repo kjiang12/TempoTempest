@@ -491,7 +491,12 @@ function win() {
 	synth.triggerRelease(prevMusicArr);
 	gamePiece.y = -50;
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p >Level Complete!\tScore = " + score + "\tAccuracy: " + hitPlats/totalPlats*100 + "<\p>";
+	document.getElementsByClassName("modal-header")[0].className += " win";
+	document.getElementsByClassName("modal-content")[0].className += " win";
+	document.getElementById("EndTitle").innerHTML = "Song Complete!";
+	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + hitPlats/totalPlats*100 + "</p>";
+	
+	
 	$("#Score").modal('show');
 	playVictory();
 }
@@ -499,7 +504,9 @@ function win() {
 // End game
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
+	document.getElementsByClassName("modal-header")[0].className += " lose";
+	document.getElementsByClassName("modal-content")[0].className += " lose";
 	document.getElementById("EndTitle").innerHTML = "Game Over";
-	document.getElementById('content').innerHTML = " <p>Score = " + score + "<\p>";
+	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p>";
 	$("#Score").modal('show');
 }
