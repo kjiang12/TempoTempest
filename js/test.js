@@ -176,6 +176,7 @@ var gameArea = {
 				}
 			}
 			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
+			gamePiece.speedY = Math.min(gamePiece.speedY, -4);
 		}
 		if (gameArea.keys && gameArea.keys[77] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
@@ -347,9 +348,13 @@ function generatePlatforms(array) {
 
 function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
-		if (platforms[i].y - platforms[i+1].y > 90) {
+		var c = 1;
+		while (i+c < platforms.length-1 && platforms[i+c].x == platforms[i].x && platforms[i+c].width == platforms[i].width) {
+			c++;
+		}
+		if (platforms[i].y - platforms[i+c].y > 90) {
 			incJumpLocs.push(platforms[i].id);
-			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+1].y) / -50);
+			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+c].y) / -50);
 		}
 	}
 }
