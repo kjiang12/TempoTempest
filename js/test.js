@@ -27,7 +27,7 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
-	gamePiece = new component(20, 20, "orangered");
+	gamePiece = new component(20, 20, "lime");
 	//synth = new Tone.Synth().toMaster();
 	synth = new Tone.PolySynth(4, Tone.AMSynth).toMaster();
 	playNote();
@@ -183,7 +183,7 @@ var gameArea = {
 				gamePiece.update(dt);
 			}
 		}
-		gamePiece.color = "orangered";
+		gamePiece.color = "lime";
 		if (gameArea.keys && gameArea.keys[39]) {
 			movePlatforms(platforms, -.9);
 			gamePiece.color = "red";
@@ -379,14 +379,14 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
 		if (this.gradOne) {
 			ctx.shadowBlur = 20;
-			ctx.shadowColor = "yellow";
+			ctx.shadowColor = "white";
 			grd.addColorStop(0,"yellow");
 			grd.addColorStop(1,"white");
 		} else if (!this.touched) {
-			grd.addColorStop(0, "black");
+			grd.addColorStop(0, "white");
 			grd.addColorStop(1, "black");
 		} else if (this.touched) {
-			grd.addColorStop(0, "green");
+			grd.addColorStop(0, "lime");
 			grd.addColorStop(1, "cyan");
 		}
 		ctx.fillStyle = grd;
