@@ -30,22 +30,35 @@ window.onload = function(){
 	gamePiece = new component(20, 20, "orangered");
 	//synth = new Tone.Synth().toMaster();
 	synth = new Tone.PolySynth(4, Tone.AMSynth).toMaster();
-	playVictory();
+	playNote();
 }
 
 function restartGame(){
 	$("#Score").modal('hide');
 	startGame();
 }
-function playVictory() {
-	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
+function playNote() {
+	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
 	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
 	chord.triggerAttack(["D4", "F#4", "A3"], 2.30);
 	chord.triggerRelease(["D4", "F#4", "A3"], 4);
 	chord.triggerAttack(["G4", "B3", "D4"], 4.05);
-	chord.triggerRelease(["G4", "B3", "D4"], 5.55);
+	chord.triggerAttack(["G3"], 6);
+	chord.triggerRelease(["G3", "G4", "B3", "D4"], 7);
 };
+
+function playVictory() {
+	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
+	chord.triggerAttack(["C4"], 0.5);
+	chord.triggerRelease(["C4"], 0.75)
+	chord.triggerAttack(["D4"], 0.75);
+	chord.triggerRelease(["D4"], 1)
+	chord.triggerAttack(["E4"], 1);
+	chord.triggerRelease(["E4"], 1.25)
+	chord.triggerAttack(["C4", "E4", "G4"], 1.25);
+	chord.triggerRelease(["C4", "E4", "G4"], 2.25);
+}
 
 function handleFileSelect(evt) {
     evt.stopPropagation();
@@ -221,6 +234,7 @@ function component(width, height, color) {
 			if (isOnGround(gamePiece, currPlat) && this.speedY >= 0) {
 				this.onGround = true;
 				this.onTile = currPlat.id;
+				currPlat.touched = true;
 				currPlat.setColor(true);
 				if (currPlat.givePoint) {
 					score += 1;
@@ -336,6 +350,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.gradOne = false;
 	this.volume = volume;
 	this.note = note;
+	this.touched = false;
 	
 	this.update = function(dt){
 		this.x -= 1.3 * dt;
@@ -350,9 +365,12 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 			ctx.shadowColor = "yellow";
 			grd.addColorStop(0,"yellow");
 			grd.addColorStop(1,"white");
-		} else {
+		} else if (!this.touched) {
 			grd.addColorStop(0, "black");
 			grd.addColorStop(1, "black");
+		} else if (this.touched) {
+			grd.addColorStop(0, "green");
+			grd.addColorStop(1, "cyan");
 		}
 		ctx.fillStyle = grd;
         ctx.fillRect(this.x, this.y, this.width, this.height);
