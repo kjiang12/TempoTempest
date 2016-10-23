@@ -239,6 +239,7 @@ function component(width, height, color) {
 		
 		this.onGround = false;
 		var doClear = true
+		var others = [];
 		for (i = 0; i < platforms.length; i++) {
 			var currPlat = platforms[i];
 			if(this.x < currPlat.x + currPlat.width && this.x > currPlat.x){
@@ -251,6 +252,12 @@ function component(width, height, color) {
 				this.onTile = currPlat.id;
 				currPlat.touched = true;
 				currPlat.setColor(true);
+				others = getVertical(this.x, this.width);
+				for (o = 0; o < others.length; o++) {
+					others[o].setColor(true);
+					others[o].touched = true;
+				}
+				
 				if (currPlat.givePoint) {
 					score += 1;
 					if (currPlat.id != currentId) {
@@ -263,7 +270,15 @@ function component(width, height, color) {
 					isPlaying = true;
 				}
 			} else {
-				currPlat.setColor(false);
+				var doReset = true;
+				for (o = 0; o < others.length; o++) {
+					if (others[o].id == platforms[i].id) {
+						doReset = false;
+					}
+				}
+				if (doReset) {
+					currPlat.setColor(false);
+				}
 			}
 		}
 		
@@ -280,6 +295,9 @@ function component(width, height, color) {
 		}
 		
 		if (doClear) {
+			for (i = 0; i < platforms.length && platforms[i].x < canvas.width; i++) {
+				platforms[i].setColor(false);
+			}
 			synth.triggerRelease(prevMusicArr);
 			this.onTile = -1;
 			isPlaying = false;
@@ -428,6 +446,17 @@ function generateFlag(x,y) {
 
 
 	}
+}
+
+function getVertical(x, width) {
+	var counter = 0;
+	var ret = [];
+	while (counter < platforms.length && platforms[counter].x < canvas.width) {
+		if (platforms[counter].x <= x + width/2 && platforms[counter].x + platforms[counter].width >= x + width/2)
+			ret.push(platforms[counter]);
+		counter++;
+	}
+	return ret;
 }
 
 function win() {
