@@ -35,7 +35,7 @@
 	
 	<div class="container">
 		<div class="centered" id="drop_zone">
-			<p class="centered" >Select a MIDI file to begin...</p>
+			<p class="centered">Select a MIDI file to begin...</p>
 			<input type="file" accept="audio/midi" onchange="handleFile(this.files)" />
 		</div>
 		<output id="Title"></output>
@@ -51,6 +51,7 @@
 				</div>
 				<div class="modal-footer">
 					<button id="restart" type="button" class="btn btn-default" onclick="restartGame()">Play Again</button>
+					<button type="button" class="btn btn-default" onclick="play()">Autoplay song</button>
 					<button type="button" class="btn btn-default" onclick="location.reload()">Try a New Song</button>
 				</div>
 			</div><!-- /.modal-content -->

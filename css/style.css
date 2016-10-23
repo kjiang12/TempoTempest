@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "Script";
+    src: url(ChopinScript.ttf) format("truetype");
+}
+
+
 canvas {
 	background: url('../images/music-notes.jpg');
     border:5px groove #06719e;
@@ -55,7 +61,8 @@ html {
 #drop_zone > p{
 	font-size : 300%;
 	font-weight: bold;
-	color: Brown;
+	color: SaddleBrown;
+	font-family: Script;
 }
 
 #drop_zone > input{
@@ -70,11 +77,12 @@ html {
 }
 
 #Title {
+	font-family: Script;
 	text-align: right;
 	padding-right: 10px;
 	padding-bottom: 70px;
 	margin-top: -80px;
-	font-family: script;
+
 }
 
 .centered {
@@ -82,6 +90,7 @@ html {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
 }
 
 .modal-footer {
@@ -96,6 +105,7 @@ html {
 }
 
 .lose {
+	font-family: Script;
 	background: #eeeeee; /* Old browsers */
 	background: -moz-linear-gradient(-45deg, #eeeeee 0%, #cccccc 100%); /* FF3.6-15 */
 	background: -webkit-linear-gradient(-45deg, #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6 */

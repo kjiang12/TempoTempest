@@ -33,7 +33,7 @@ var prevMusicArr = [];
 // Calculating percentage hit
 var totalPlats = 0; hitPlats = 0;
 // Play through boolean
-var playThrough = 1;
+var playThrough = 0;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -253,10 +253,10 @@ function component(width, height, color) {
 		ctx.fill();
 		ctx.shadowBlur = 0;
 
-		ctx.fillStyle = 'black';
+		ctx.fillStyle = 'gold';
 		ctx.font="20px Georgia";
-		ctx.fillText(score, 30, 30);
-		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 30, 55);
+		ctx.fillText(score, 60, 30);
+		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 60, 55);
 		
     }
 	// Periodically called to update the circle
@@ -439,7 +439,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		if (this.gradOne) {
 			ctx.shadowBlur = 20;
 			ctx.shadowColor = "yellow";
-			grd.addColorStop(0,"yellow");
+			grd.addColorStop(0,"gold");
 			grd.addColorStop(1,"white");
 		} else if (!this.touched) {
 			ctx.shadowBlur = 10;
