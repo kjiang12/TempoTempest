@@ -3,6 +3,7 @@ canvas {
 	border-radius: 5px;
 	padding-left: 0;
     padding-right: 0;
+	margin-top: -50px;
     margin-left: auto;
     margin-right: auto;
     display: block;
@@ -22,6 +23,7 @@ canvas {
 	right: 15px;
 
 }
+
 body { 
 	height: 100%;
     padding-top: 20px; 
@@ -54,7 +56,12 @@ html {
 #drop_zone > p{
 	font-size : 300%;
 	font-weight: bold;
-	color : White;
+	color: White;
+}
+
+#Title {
+	text-align: right;
+	padding-right: 10px;
 }
 
 .centered {

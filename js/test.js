@@ -203,7 +203,7 @@ function component(width, height, color) {
 		//ctx.fillStyle = "black";
 		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
-		ctx.fillText(score, 10, 30);
+		ctx.fillText(score, 30, 30);
 		
     }
     this.update = function(dt) {
