@@ -527,10 +527,9 @@ function win() {
 	document.getElementsByClassName("modal-content")[0].className += " win";
 	document.getElementById("EndTitle").innerHTML = "Song Complete!";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
-
+	playThrough = 0;
 	$("#Score").modal('show');
 	playVictory();
-	playThrough = 0;
 }
 
 // End game
@@ -541,10 +540,11 @@ function gameOver() {
 	document.getElementsByClassName("modal-content")[0].className += " lose";
 	document.getElementById("EndTitle").innerHTML = "Game Over";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
+	playThrough = 0;
 	$("#Score").modal('show');
 }
 
-function play() {
+function autoplay() {
 	$("#Score").modal('hide');
 	playThrough = 1;
 	startGame();
