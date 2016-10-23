@@ -32,6 +32,8 @@ var musicArr = [];
 var prevMusicArr = [];
 // Calculating percentage hit
 var totalPlats = 0; hitPlats = 0;
+// Play through boolean
+var playThrough = 1;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -65,6 +67,7 @@ function playNote() {
 }
 
 // Winning song
+
 function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
 	chord.triggerAttack(["C4"], 0.5);
@@ -80,7 +83,7 @@ function playVictory() {
 function handleFile(files) {
 	if (files.length > 0){
 		var file = files[0];
-		document.getElementById('Title').innerHTML = '<h4>' + "Now playing - " + file.name.split(".")[0] + '</h4>';
+		document.getElementById('Title').innerHTML = '<h3>' + "Now playing - " + file.name.split(".")[0] + '</h3>';
 		parseFile(file);
 	}
 	dropZone.style.display = 'none';
@@ -94,7 +97,7 @@ function handleFileSelect(evt) {
 	var files = evt.dataTransfer.files;
 	if (files.length > 0){
 		var file = files[0];
-		document.getElementById('Title').innerHTML = '<h4>' + "Now playing - " + file.name.split(".")[0] + '</h4>';
+		document.getElementById('Title').innerHTML = '<h3>' + "Now playing - " + file.name.split(".")[0] + '</h3>';
 		parseFile(file);
 	}
 	dropZone.style.display = 'none';
@@ -144,9 +147,12 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'DISPLAY'));
 	generatePlatforms(noteArray);
 	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
+	if (playThrough != 0) {
+		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'DISPLAY'));
+	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
 	gameArea.start();
@@ -192,7 +198,7 @@ var gameArea = {
 			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
 			gamePiece.speedY = Math.min(gamePiece.speedY, -4);
 		}
-		if (gameArea.keys && gameArea.keys[77] && !gamePiece.onGround) {
+		if (gameArea.keys && gameArea.keys[77] && !gamePiece.onGround && gamePiece.speedY != 0) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
 				gamePiece.update(dt);
@@ -214,6 +220,7 @@ var gameArea = {
 		
 		gamePiece.update(dt); 
 		gamePiece.draw();
+		
 	},
 	run : function() {
 		animationId = requestAnimationFrame(gameArea.run);
@@ -233,6 +240,8 @@ function component(width, height, color) {
     this.y = 120; 
 	this.color = color;
 	this.onTile = -1;
+	
+	
     this.draw = function() {
         ctx = gameArea.context;
 		ctx.beginPath();
@@ -246,6 +255,8 @@ function component(width, height, color) {
 		ctx.fill();
 		ctx.fillStyle = "gold";
 		ctx.shadowBlur = 0;
+
+		ctx.fillStyle = 'black';
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 30, 30);
 		ctx.fillText(totalPlats == 0 ? 0 : (hitPlats/totalPlats * 100).toFixed(2), 30, 55);
@@ -253,16 +264,21 @@ function component(width, height, color) {
     }
 	// Periodically called to update the circle
     this.update = function(dt) {
+		if(playThrough != 0) {
+			this.y = -10;
+		}
         this.y += this.speedY * dt; 
 		
 		this.onGround = false;
 		var doClear = true
 		var others = [];
+		var count = 0;
 		for (i = 0; i < platforms.length; i++) {
 			var currPlat = platforms[i];
 			if(this.x < currPlat.x + currPlat.width && this.x > currPlat.x){
-				if(!musicArr.includes(currPlat.note)){
+				if(!musicArr.includes(currPlat.note) && !(currPlat.note ===  'DISPLAY')){
 					musicArr.push(currPlat.note);
+					count++;
 				}
 			}
 			if (isOnGround(gamePiece, currPlat) && this.speedY >= 0) {
@@ -284,7 +300,9 @@ function component(width, height, color) {
 					if (!isPlaying) {
 						currentId = currPlat.id;
 					}
-					doClear = false;
+					if (!(currPlat.note ===  'DISPLAY' && count == 0)){
+						doClear = false;
+					}
 					isPlaying = true;
 				}
 			} else {
@@ -301,7 +319,7 @@ function component(width, height, color) {
 		}
 		
 		musicArr.sort();
-		
+		console.log(musicArr);
 		if(isPlaying && musicArr.toString() != prevMusicArr.toString()){
 			synth.triggerRelease(prevMusicArr);
 			synth.triggerAttack(musicArr);
@@ -313,6 +331,7 @@ function component(width, height, color) {
 		}
 		
 		if (doClear) {
+			count = 0;
 			for (i = 0; i < platforms.length && platforms[i].x < canvas.width; i++) {
 				platforms[i].setColor(false);
 			}
@@ -502,15 +521,29 @@ function win() {
 	gamePiece.y = -50;
 	window.cancelAnimationFrame(animationId);
 	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
-	document.getElementById('content').innerHTML = "<p >Level Complete!\tScore = " + score + "\tAccuracy: " + perc + "<\p>";
+	document.getElementsByClassName("modal-header")[0].className += " win";
+	document.getElementsByClassName("modal-content")[0].className += " win";
+	document.getElementById("EndTitle").innerHTML = "Song Complete!";
+	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
+
 	$("#Score").modal('show');
 	playVictory();
+	playThrough = 0;
 }
 
 // End game
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
 	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
-	document.getElementById('content').innerHTML = "<p >Game over\tScore = " + score + "\tAccuracy: " + perc + "<\p>";
+	document.getElementsByClassName("modal-header")[0].className += " lose";
+	document.getElementsByClassName("modal-content")[0].className += " lose";
+	document.getElementById("EndTitle").innerHTML = "Game Over";
+	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
 	$("#Score").modal('show');
+}
+
+function play() {
+	$("#Score").modal('hide');
+	playThrough = 1;
+	startGame();
 }

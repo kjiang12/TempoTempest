@@ -35,7 +35,7 @@
 	
 	<div class="container">
 		<div class="centered" id="drop_zone">
-			<p class="centered" >Select a midi file to get started!</p>
+			<p class="centered" >Select a MIDI file to begin...</p>
 			<input type="file" accept="audio/midi" onchange="handleFile(this.files)" />
 		</div>
 		<output id="Title"></output>
@@ -43,12 +43,15 @@
 	</div>
 	<div class="modal fade centered" tabindex="-1" id="Score" role="dialog">
 		<div class="modal-dialog" role="document">
+			<div class="modal-header">
+				<h4 class="modal-title" id="EndTitle">Modal title</h4>
+			</div>
 			<div class="modal-content">
 				<div class="modal-body" id="content">
 				</div>
 				<div class="modal-footer">
-					<button id="restart" type="button" class="btn btn-default" onclick="restartGame()">Retry</button>
-					<button type="button" class="btn btn-default" onclick="location.reload()">New Game</button>
+					<button id="restart" type="button" class="btn btn-default" onclick="restartGame()">Play Again</button>
+					<button type="button" class="btn btn-default" onclick="location.reload()">Try a New Song</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
