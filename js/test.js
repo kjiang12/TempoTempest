@@ -287,7 +287,7 @@ function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
 		if (platforms[i].y - platforms[i+1].y > 90) {
 			incJumpLocs.push(platforms[i].id);
-			incJumpVal.push(-3 + (platforms[i].y - platforms[i+1].y) / -50);
+			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+1].y) / -50);
 		}
 	}
 }
