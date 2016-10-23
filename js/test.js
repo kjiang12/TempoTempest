@@ -145,12 +145,7 @@ var gameArea = {
 			}
 		}
 		gamePiece.color = "orangered";
-		if (gameArea.keys && gameArea.keys[37] && gameArea.keys[39]) {
-			
-		} else if (gameArea.keys && gameArea.keys[37]) {
-			movePlatforms(platforms, .9);
-			gamePiece.color = "salmon";
-		} else if (gameArea.keys && gameArea.keys[39]) {
+		if (gameArea.keys && gameArea.keys[39]) {
 			movePlatforms(platforms, -.9);
 			gamePiece.color = "red";
 		}
