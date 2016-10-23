@@ -30,7 +30,7 @@ window.onload = function(){
 	gamePiece = new component(20, 20, "orangered");
 	//synth = new Tone.Synth().toMaster();
 	synth = new Tone.PolySynth(4, Tone.AMSynth).toMaster();
-	playNote();
+	playVictory();
 }
 
 function restartGame(){
@@ -104,7 +104,9 @@ function startGame() {
 	platforms = [];
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
 	generatePlatforms(noteArray);
-	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
+	if (platforms.length > 1) {
+		platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
+	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	
 	gameArea.keys = [];
