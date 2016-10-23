@@ -13,6 +13,7 @@ var isPlaying = false;
 var currentId = 0;
 var animationId;
 var incJumpLocs = [];
+var incJumpVal = [];
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -93,10 +94,11 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
+	incJumpLocs = [];
+	incJumpVal = [];
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
 	generatePlatforms(noteArray);
 	gameArea.keys = [];
-	incJumpLocs = [];
 	gameArea.start();
 }
 		
@@ -127,12 +129,14 @@ var gameArea = {
 		
 		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
 			var jumpBoost = false;
-			for (i = 0; i < incJumpLocs; i++) {
-				if (gamePiece.onTile.id == incJumpLocs[i].id) {
+			var index = -1;
+			for (i = 0; i < incJumpLocs.length; i++) {
+				if (gamePiece.onTile == incJumpLocs[i]) {
 					jumpBoost = true;
+					index = i;
 				}
 			}
-			gamePiece.speedY = jumpBoost ? -10 : -4;
+			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
 		}
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
@@ -219,12 +223,12 @@ function component(width, height, color) {
 				}
 			} else {
 				platforms[i].setColor(false);
-				this.onTile = -1;
 			}
 		}
 		
 		if (doClear) {
 			synth.triggerRelease();
+			this.onTile = -1;
 			isPlaying = false;
 		}
 		
@@ -281,15 +285,15 @@ function generatePlatforms(array) {
 
 function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
-		if (platforms[i].y - platforms[i+1].y > 70) {
+		if (platforms[i].y - platforms[i+1].y > 90) {
 			incJumpLocs.push(platforms[i].id);
-			console.log(platforms[i].id);
+			incJumpVal.push(-3 + (platforms[i].y - platforms[i+1].y) / -50);
 		}
 	}
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
-	this.id = parseInt(Math.random()*12424121);
+	this.id = parseInt(Math.random()*5000);
 	this.givePoint = givePoint;
 	this.x = x;
 	this.y = y;
