@@ -246,7 +246,7 @@ function component(width, height, color) {
 }
 
 function isOnGround(myPiece, platform) {
-	if (myPiece.x < platform.x || myPiece.x > platform.x + platform.width) {return false; }
+	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
 	
 	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {
 		myPiece.y = platform.y - myPiece.height;
