@@ -50,7 +50,8 @@ window.onload = function(){
 
 function restartGame(){
 	$("#Score").modal('hide');
-	startGame();
+	document.getElementById('StartButton').style.display = 'inline';
+	document.getElementById('HelpButton').style.display = 'inline';
 }
 
 // Intro song
@@ -66,7 +67,6 @@ function playNote() {
 }
 
 // Winning song
-
 function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
 	chord.triggerAttack(["C4"], 0.5);
@@ -133,7 +133,8 @@ function parseNotes(notes){
 	}
 
 	noteArray = array;
-	startGame();
+	document.getElementById('StartButton').style.display = 'inline';
+	document.getElementById('HelpButton').style.display = 'inline';
 }
 
 // Begin the game, reset data
@@ -155,6 +156,8 @@ function startGame() {
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
 	gameArea.start();
+	document.getElementById('StartButton').style.display = 'none';
+	document.getElementById('HelpButton').style.display = 'none';
 }
 		
 // Create game area
@@ -410,6 +413,9 @@ function generatePlatforms(array) {
 		return a.x - b.x;
 	});
 	checkPlatforms();
+	platforms.sort(function(a, b) {
+		return a.x - b.x;
+	});
 }
 
 // Determine platforms that are too high to jump to; give jump boost before those platforms
@@ -423,11 +429,12 @@ function checkPlatforms() {
 		if (platforms[i].y - platforms[i+c].y > 90) {
 			incJumpLocs.push(platforms[i].id);
 			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+c].y) / -50);
-		}
+		
+		/*
 	// Delete if any problems
 		if (platforms[i+1].x - (platforms[i].x + platforms[i].width) > 150 && platforms[i+1].x - (platforms[i].x + platforms[i].width) < 500) {
 			var dif = (platforms[i+1].x - 20)-(platforms[i].x + platforms[i].width + 20);
-			platforms.push(new generatePlatform(false, platforms[i].x + platforms[i].width + 20, (platforms[i].y+platforms[i+1].y)/2, dif, 30, 'DISPLAY'));
+			platforms.push(new generatePlatform(false, platforms[i].x + platforms[i].width + 20, (platforms[i].y+platforms[i+1].y)/2, dif, 30, 'DISPLAY'));*/
 		}
 	}
 }
@@ -527,10 +534,9 @@ function win() {
 	document.getElementsByClassName("modal-content")[0].className += " win";
 	document.getElementById("EndTitle").innerHTML = "Song Complete!";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
-
+	playThrough = 0;
 	$("#Score").modal('show');
 	playVictory();
-	playThrough = 0;
 }
 
 // End game
@@ -541,11 +547,16 @@ function gameOver() {
 	document.getElementsByClassName("modal-content")[0].className += " lose";
 	document.getElementById("EndTitle").innerHTML = "Game Over";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
+	playThrough = 0;
 	$("#Score").modal('show');
 }
 
-function play() {
+function autoplay() {
 	$("#Score").modal('hide');
 	playThrough = 1;
 	startGame();
+}
+
+function popup() {
+	alert("Press Z to jump, M to fall");
 }
