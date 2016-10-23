@@ -247,14 +247,24 @@ function component(width, height, color) {
 }
 
 function isOnGround(myPiece, platform) {
-	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
+	var rectX = platform.x + platform.width/2;
+	var rectY = platform.y + platform.height/2;
 	
-	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {
+	var distX = Math.abs(myPiece.x - rectX);
+	var distY = Math.abs(myPiece.y - rectY);
+	
+	if(distX > (platform.width/2 + myPiece.height) || distY > (platform.height/2 + myPiece.height) || myPiece.speedY < 0){
+		return false;
+	}
+	
+	if(distX <= platform.width/2 || distY <= platform.height/2){
 		myPiece.y = platform.y - myPiece.height;
 		return true;
 	}
 	
-	return false;
+	var dx = distX - platform.width/2;
+	var dy = distY - platform.height/2;
+	return (dx*dx + dy*dy <= myPiece.height * myPiece.height);
 }
 
 function movePlatforms(arr, spd) {
