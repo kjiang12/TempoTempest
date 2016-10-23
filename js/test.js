@@ -137,6 +137,8 @@ function parseNotes(notes){
 // Begin the game, reset data
 function startGame() {
 	gamePiece.restart();
+	totalPlats = 0;
+	hitPlats = 0;
 	currTime = 0;
 	prevTime = 0;
 	startTime = Date.now();
@@ -242,10 +244,11 @@ function component(width, height, color) {
 		ctx.shadowBlur = 30;
 		ctx.shadowColor = this.color;
 		ctx.fill();
+		ctx.fillStyle = "gold";
 		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 30, 30);
-		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 30, 55);
+		ctx.fillText(totalPlats == 0 ? 0 : (hitPlats/totalPlats * 100).toFixed(2), 30, 55);
 		
     }
 	// Periodically called to update the circle
@@ -389,6 +392,7 @@ function generatePlatforms(array) {
 }
 
 // Determine platforms that are too high to jump to; give jump boost before those platforms
+// Also check for platforms that are too far apart
 function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
 		var c = 1;
@@ -398,6 +402,11 @@ function checkPlatforms() {
 		if (platforms[i].y - platforms[i+c].y > 90) {
 			incJumpLocs.push(platforms[i].id);
 			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+c].y) / -50);
+		}
+	// Delete if any problems
+		if (platforms[i+1].x - (platforms[i].x + platforms[i].width) > 100 && platforms[i+1].x - (platforms[i].x + platforms[i].width) < 500) {
+			var dif = (platforms[i+1].x - 20)-(platforms[i].x + platforms[i].width + 20);
+			platforms.push(new generatePlatform(false, platforms[i].x + platforms[i].width + 20, (platforms[i].y+platforms[i+1].y)/2, dif, 30, 'DISPLAY'));
 		}
 	}
 }
@@ -421,8 +430,12 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.draw = function() {
 		ctx = gameArea.context;
   
-		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
-		if (this.gradOne) {
+		var grd=ctx.createLinearGradient(this.width / 2, this.y, this.width / 2, this.y + 30);
+		if (!givePoint) {
+			grd.addColorStop(0, "red");
+			grd.addColorStop(1, "red");
+		}
+		else if (this.gradOne) {
 			ctx.shadowBlur = 20;
 			ctx.shadowColor = "yellow";
 			grd.addColorStop(0,"yellow");
@@ -488,7 +501,8 @@ function win() {
 	synth.triggerRelease(prevMusicArr);
 	gamePiece.y = -50;
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p >Level Complete!\tScore = " + score + "\tAccuracy: " + hitPlats/totalPlats*100 + "<\p>";
+	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
+	document.getElementById('content').innerHTML = "<p >Level Complete!\tScore = " + score + "\tAccuracy: " + perc + "<\p>";
 	$("#Score").modal('show');
 	playVictory();
 }
@@ -496,6 +510,7 @@ function win() {
 // End game
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p >Game over\tScore = " + score + "\tAccuracy: " + hitPlats/totalPlats*100 + "<\p>";
+	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
+	document.getElementById('content').innerHTML = "<p >Game over\tScore = " + score + "\tAccuracy: " + perc + "<\p>";
 	$("#Score").modal('show');
 }
