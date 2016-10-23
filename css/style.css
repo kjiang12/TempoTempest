@@ -24,17 +24,16 @@ canvas {
 	right: 15px;
 
 }
-
 body { 
 	height: 100%;
     padding-top: 20px; 
 	padding-bottom: 20px;
-	background: #42bff4; /* For browsers that do not support gradients */
+	background: #f48f42; /* For browsers that do not support gradients */
     background: red; /* For browsers that do not support gradients */    
-    background: -webkit-radial-gradient(#42bff4, #8deffc); /* Safari 5.1 to 6.0 */
-    background: -o-radial-gradient(#42bff4, #8deffc); /* For Opera 11.6 to 12.0 */
-    background: -moz-radial-gradient(#42bff4, #8deffc); /* For Firefox 3.6 to 15 */
-    background: radial-gradient(#42bff4, #8deffc); /* Standard syntax (must be last) */
+    background: -webkit-radial-gradient(#42bff4, #f48f42); /* Safari 5.1 to 6.0 */
+    background: -o-radial-gradient(#42bff4,#f48f42); /* For Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient(#42bff4, #f48f42); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(#42bff4, #f48f42); /* Standard syntax (must be last) */
 	background-repeat: no-repeat;
     background-attachment: fixed;
 }
@@ -77,8 +76,13 @@ html {
 }
 
 .centered {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.modal-footer {
+	text-align : center;
+}
+
