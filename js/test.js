@@ -37,7 +37,6 @@ window.onload = function(){
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
 	canvas.height = window.innerHeight * 0.70;
-	
 	canvas.width = 1000;
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
@@ -108,7 +107,6 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
 }
 
-
 function parseFile(file){
 	//read the file
 	var reader = new FileReader();
@@ -148,7 +146,6 @@ function startGame() {
 	generatePlatforms(noteArray);
 	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
-	
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -423,7 +420,6 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	}
 	this.draw = function() {
 		ctx = gameArea.context;
-		
   
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
 		if (this.gradOne) {
@@ -472,9 +468,6 @@ function generateFlag(x,y) {
 				ctx.drawImage(this.flag, this.x, this.y);
 			}
 		}
-		
-
-
 	}
 }
 
