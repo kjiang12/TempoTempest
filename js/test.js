@@ -16,7 +16,7 @@ var noteArray;
 var synth;
 // Max jump height
 var maxGap = 100;
-// Song is currently playings
+// Note is currently playings
 var isPlaying = false;
 // ID of platform that is playing a note
 var currentId = 0;
