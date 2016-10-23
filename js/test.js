@@ -34,7 +34,7 @@ var prevMusicArr = [];
 var totalPlats = 0; hitPlats = 0;
 // Play through boolean
 var playThrough = 0;
-
+var skip = false;
 window.onload = function(){
 	gameIsRunning = false;
 	canvas = document.getElementById("Game");
@@ -50,8 +50,7 @@ window.onload = function(){
 
 function restartGame(){
 	$("#Score").modal('hide');
-	document.getElementById('StartButton').style.display = 'inline';
-	document.getElementById('HelpButton').style.display = 'inline';
+	startGame();
 }
 
 // Intro song
@@ -133,8 +132,8 @@ function parseNotes(notes){
 	}
 
 	noteArray = array;
-	document.getElementById('StartButton').style.display = 'inline';
-	document.getElementById('HelpButton').style.display = 'inline';
+	
+	startGame();
 }
 
 // Begin the game, reset data
@@ -155,11 +154,19 @@ function startGame() {
 	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
-	gameArea.start();
-	document.getElementById('StartButton').style.display = 'none';
-	document.getElementById('HelpButton').style.display = 'none';
+	if(!skip){
+		document.getElementById('PauseOverlay').style.display = 'inline';
+		document.getElementById('PauseOverlay').style.height = canvas.height + 10 + "px";
+		document.getElementById('PauseOverlay').style.width = canvas.width + 10 + "px";
+	} else{
+		actuallyStartGame();
+	}
 }
-		
+
+function actuallyStartGame(){
+	document.getElementById('PauseOverlay').style.display = 'none';
+	gameArea.start();
+}
 // Create game area
 var gameArea = {
 	start : function() {
@@ -324,7 +331,7 @@ function component(width, height, color) {
 		}
 		
 		musicArr.sort();
-		console.log("MA: "+musicArr.toString() + " PMA: " + prevMusicArr.toString());
+
 		if(isPlaying && musicArr.toString() != prevMusicArr.toString()){
 			synth.triggerRelease(prevMusicArr);
 			synth.triggerAttack(musicArr);
@@ -535,6 +542,7 @@ function win() {
 	document.getElementById("EndTitle").innerHTML = "Song Complete!";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
 	playThrough = 0;
+	skip = true;
 	$("#Score").modal('show');
 	playVictory();
 }
@@ -543,11 +551,12 @@ function win() {
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
 	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
-	document.getElementsByClassName("modal-er")[0].className += " lose";
+	document.getElementsByClassName("modal-header")[0].className += " lose";
 	document.getElementsByClassName("modal-content")[0].className += " lose";
 	document.getElementById("EndTitle").innerHTML = "Game Over";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
 	playThrough = 0;
+	skip = true;
 	$("#Score").modal('show');
 }
 

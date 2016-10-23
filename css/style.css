@@ -14,6 +14,7 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
+	position: absolute;
 }
 .container {
 	padding-left: 0;
@@ -136,4 +137,29 @@ html {
 	background: linear-gradient(135deg, #eab92d 0%,#c79810 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eab92d', endColorstr='#c79810',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 
+}
+
+#PauseOverlay {
+	background: rgba(0, 0, 0,0.5);
+	text-align: center;
+	margin-top: -50px;
+	position:absolute;
+}
+
+#PauseOverlay > div {
+	vertical-align: middle;
+	margin-left:25%;
+	margin-right:25%;
+	margin-top: 25%;
+}
+
+.start {
+	padding: 20px 40px;
+	font-size: 20px;
+}
+
+.divider{
+    width:20%;
+    height:auto;
+    display:inline-block;
 }

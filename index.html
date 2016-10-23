@@ -40,8 +40,13 @@
 		</div>
 		<output id="Title"></output>
 		<canvas style="display:none;" id="Game"></canvas>
-		<button style="display:none;" id="StartButton" onclick="startGame()">Start</button>
-		<button style="display:none;" id="HelpButton" onclick="popup()">Help</button>
+		<div id="PauseOverlay" style="display:none;">
+			<div id="buttons" >
+				<button type="button" class="btn btn-default win start" id="StartButton" onclick="actuallyStartGame()">Play</button>
+				<div class="divider"></div>
+				<button type="button" class="btn btn-default win start" id="HelpButton" data-toggle="modal" data-target="#Help">Help</button>
+			</div>
+		</div>
 	</div>
 	<div class="modal fade centered" tabindex="-1" id="Score" role="dialog">
 		<div class="modal-dialog" role="document">
@@ -55,6 +60,19 @@
 					<button id="restart" type="button" class="btn btn-default" onclick="restartGame()">Play Again</button>
 					<button type="button" class="btn btn-default" onclick="autoplay()">Autoplay song</button>
 					<button type="button" class="btn btn-default" onclick="location.reload()">Try a New Song</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<div class="modal fade centered" tabindex="-1" id="Help" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-header">
+				<h4 class="modal-title" Help</h4>
+			</div>
+			<div class="modal-content">
+				<div class="modal-body" id="content">
+					<p>Press Z to jump, M to fall.</p>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
