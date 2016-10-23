@@ -239,10 +239,8 @@ function component(width, height, color) {
 		
 		musicArr.sort();
 		
-		if(isPlaying){
-			if(musicArr.toString() != prevMusicArr.toString()){
-				synth.triggerRelease(prevMusicArr);
-			}
+		if(isPlaying && musicArr.toString() != prevMusicArr.toString()){
+			synth.triggerRelease(prevMusicArr);
 			synth.triggerAttack(musicArr);
 			prevMusicArr = musicArr.slice();
 		}
