@@ -262,7 +262,7 @@ function component(width, height, color) {
 		ctx.font="20px Georgia";
 
 		ctx.fillText(score, 60, 30);
-		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 60, 55);
+		ctx.fillText(totalPlats == 0 ? 0 : (hitPlats/totalPlats * 100).toFixed(2), 60, 55);
 		
     }
 	// Periodically called to update the circle
