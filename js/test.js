@@ -70,7 +70,12 @@ function parseFile(file){
 	reader.onload = function(e){
 		var display = MidiConvert.parse(e.target.result).tracks
 		
-		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		var partsData;
+		try {
+			partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		} catch(err) {
+			partsData = MidiConvert.parse(e.target.result).tracks[0]["notes"];	
+		}
 		//window.alert(JSON.stringify(partsData));
 			//window.alert(JSON.stringify(partsData.length));
 		parseNotes(partsData);
