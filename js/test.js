@@ -32,6 +32,8 @@ var musicArr = [];
 var prevMusicArr = [];
 // Calculating percentage hit
 var totalPlats = 0; hitPlats = 0;
+// Play through boolean
+var playThrough = 1;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -146,6 +148,9 @@ function startGame() {
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
 	generatePlatforms(noteArray);
 	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
+	if (playThrough != 0) {
+		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'E1'));
+	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
 	gameArea.start();
@@ -213,6 +218,7 @@ var gameArea = {
 		
 		gamePiece.update(dt); 
 		gamePiece.draw();
+		
 	},
 	run : function() {
 		animationId = requestAnimationFrame(gameArea.run);
@@ -232,6 +238,8 @@ function component(width, height, color) {
     this.y = 120; 
 	this.color = color;
 	this.onTile = -1;
+	
+	
     this.draw = function() {
         ctx = gameArea.context;
 		ctx.beginPath();
@@ -253,6 +261,9 @@ function component(width, height, color) {
     }
 	// Periodically called to update the circle
     this.update = function(dt) {
+		if(playThrough != 0) {
+			this.y = -10;
+		}
         this.y += this.speedY * dt; 
 		
 		this.onGround = false;
@@ -499,6 +510,7 @@ function win() {
 	
 	$("#Score").modal('show');
 	playVictory();
+	playThrough = 0;
 }
 
 // End game
@@ -509,4 +521,10 @@ function gameOver() {
 	document.getElementById("EndTitle").innerHTML = "Game Over";
 	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p>";
 	$("#Score").modal('show');
+}
+
+function play() {
+	$("#Score").modal('hide');
+	playThrough = 1;
+	startGame();
 }
