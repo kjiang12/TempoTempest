@@ -12,6 +12,9 @@ var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
 var animationId;
+var incJumpLocs = [];
+var incJumpVal = [];
+var flagObject;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -68,9 +71,13 @@ function parseFile(file){
 	reader.onload = function(e){
 		var display = MidiConvert.parse(e.target.result).tracks
 		
-		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
-		//window.alert(JSON.stringify(partsData));
-			//window.alert(JSON.stringify(partsData.length));
+		var partsData;
+		try {
+			partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		} catch(err) {
+			partsData = MidiConvert.parse(e.target.result).tracks[0]["notes"];	
+		}
+
 		parseNotes(partsData);
 	};
 	reader.readAsBinaryString(file);
@@ -95,7 +102,8 @@ function startGame() {
 	platforms = [];
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
 	generatePlatforms(noteArray);
-
+	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
+	
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -125,7 +133,17 @@ var gameArea = {
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
 		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
-		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
+			if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
+			var jumpBoost = false;
+			var index = -1;
+			for (i = 0; i < incJumpLocs.length; i++) {
+				if (gamePiece.onTile == incJumpLocs[i]) {
+					jumpBoost = true;
+					index = i;
+				}
+			}
+			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
+		}
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
@@ -143,6 +161,8 @@ var gameArea = {
 			platforms[i].update(dt);
 			platforms[i].draw();
 		}
+		flagObject.update(dt);
+		flagObject.draw();
 		
 		gamePiece.update(dt); 
 		gamePiece.draw();
@@ -210,6 +230,10 @@ function component(width, height, color) {
 			}
 		}
 		
+		if (gamePiece.x > flagObject.x) {
+			win();
+		}
+		
 		if (doClear) {
 			synth.triggerRelease();
 			this.onTile = -1;
@@ -258,7 +282,7 @@ function generatePlatforms(array) {
 	for(i = 0; i < array.length; i++) {
 		var random = parseInt(Math.random()*5);
 		
-		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
+		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 200 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
 	platforms.sort(function(a, b) {
@@ -277,7 +301,7 @@ function checkPlatforms() {
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
-	this.id = parseInt(Math.random()*12424121);
+	this.id = parseInt(Math.random()*5000);
 	this.givePoint = givePoint;
 	this.x = x;
 	this.y = y;
@@ -296,7 +320,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
   
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
 		if (this.gradOne) {
-			ctx.shadowBlur = 5;
+			ctx.shadowBlur = 20;
 			ctx.shadowColor = "yellow";
 			grd.addColorStop(0,"yellow");
 			grd.addColorStop(1,"white");
@@ -306,11 +330,43 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		}
 		ctx.fillStyle = grd;
         ctx.fillRect(this.x, this.y, this.width, this.height);
-		ctx.shadowBlur = 0;
+		ctx.shadowBlur = 5;
 	}
 	this.setColor = function(gradOne) {
 		this.gradOne = gradOne;
 	}
+}
+
+function generateFlag(x,y) {
+	this.x = x;
+	this.y = y;
+
+	
+	this.update = function(dt){
+		this.x -= 1.3 * dt;
+	}
+	this.draw = function() {
+		ctx = gameArea.context;
+
+		var flag = new Image();
+		flag.src = 'images/flag.png';
+		if (flag.complete) {
+			ctx.drawImage(flag, this.x, this.y);
+		} else {
+			flag.onload = function(){
+				ctx.drawImage(this.image, this.x, this.y);
+			}
+		}
+		
+
+
+	}
+}
+
+function win() {
+	window.cancelAnimationFrame(animationId);
+	document.getElementById('content').innerHTML = "<p >Level Complete!\nScore = " + score + "<\p>";
+	$("#Score").modal('show');
 }
 
 function gameOver() {
