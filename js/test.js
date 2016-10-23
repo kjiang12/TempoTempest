@@ -49,11 +49,6 @@ function playNote() {
 	chord.triggerRelease(["G3", "G4", "B3", "D4"], 7);
 }
 
-function playVictory() {
-	synth.triggerAttackRelease(["C4", "E4", "G3"], .5);
-	synth.triggerAttackRelease(["D4", "F#4", "A3"], 2.30);
-	synth.triggerAttackRelease(["G4", "B3", "D4"], 4.05);
-}
 
 function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
@@ -178,7 +173,7 @@ var gameArea = {
 			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
 			gamePiece.speedY = Math.min(gamePiece.speedY, -4);
 		}
-		if (gameArea.keys && gameArea.keys[77] && !gamePiece.onGround) {
+		if (gameArea.keys && gameArea.keys[77] && !gamePiece.onGround && gamePiece.speedY != 0) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
 				gamePiece.update(dt);
@@ -470,6 +465,7 @@ function win() {
 
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
+	document.getElementById("EndTitle").innerHTML = "Game Over";
+	document.getElementById('content').innerHTML = " <p>Score = " + score + "<\p>";
 	$("#Score").modal('show');
 }

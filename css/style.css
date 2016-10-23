@@ -41,14 +41,13 @@ html {
 	height: 100%;
 }
 #drop_zone {
-	border: 3px dashed White;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
+	border: 7px dashed White;
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	border-radius: 7px;
 	padding: 25px;
 	text-align: center;
-
-	color: #bbb;
+	border-color : #938567;
 	width: 50%;
 	height: 30%;
 }
@@ -56,7 +55,7 @@ html {
 #drop_zone > p{
 	font-size : 300%;
 	font-weight: bold;
-	color: White;
+	color: Brown;
 }
 
 #drop_zone > input{
@@ -84,5 +83,28 @@ html {
 
 .modal-footer {
 	text-align : center;
+}
+
+.modal-header {
+	text-align : center;
+}
+#content {
+	text-align : center;
+}
+
+.lose {
+	background: #eeeeee; /* Old browsers */
+background: -moz-linear-gradient(-45deg, #eeeeee 0%, #cccccc 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-45deg, #eeeeee 0%,#cccccc 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg, #eeeeee 0%,#cccccc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+.lose > div > button {
+	background: #d4e4ef; /* Old browsers */
+background: -moz-linear-gradient(-45deg, #d4e4ef 0%, #86aecc 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-45deg, #d4e4ef 0%,#86aecc 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(135deg, #d4e4ef 0%,#86aecc 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d4e4ef', endColorstr='#86aecc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
