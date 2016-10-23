@@ -18,7 +18,7 @@ var synth;
 var maxGap = 100;
 // Song is currently playings
 var isPlaying = false;
-// ID of platform the circle is on
+// ID of platform that is playing a note
 var currentId = 0;
 // ID of animation
 var animationId;
@@ -44,7 +44,6 @@ window.onload = function(){
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(20, 20, "yellow");
-	//synth = new Tone.Synth().toMaster();
 	synth = new Tone.PolySynth(4, Tone.AMSynth).toMaster();
 	playNote();
 }
@@ -140,16 +139,18 @@ function parseNotes(notes){
 // Begin the game, reset data
 function startGame() {
 	gamePiece.restart();
+	totalPlats = 0;
+	hitPlats = 0;
 	currTime = 0;
 	prevTime = 0;
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'DISPLAY'));
 	generatePlatforms(noteArray);
 	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
 	if (playThrough != 0) {
-		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'E1'));
+		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'DISPLAY'));
 	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
@@ -251,10 +252,12 @@ function component(width, height, color) {
 		ctx.shadowBlur = 30;
 		ctx.shadowColor = this.color;
 		ctx.fill();
+		ctx.fillStyle = "gold";
 		ctx.shadowBlur = 0;
 
 		ctx.fillStyle = 'gold';
 		ctx.font="20px Georgia";
+
 		ctx.fillText(score, 60, 30);
 		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 60, 55);
 		
@@ -269,11 +272,15 @@ function component(width, height, color) {
 		this.onGround = false;
 		var doClear = true
 		var others = [];
+		var count = 0;
 		for (i = 0; i < platforms.length; i++) {
 			var currPlat = platforms[i];
 			if(this.x < currPlat.x + currPlat.width && this.x > currPlat.x){
-				if(!musicArr.includes(currPlat.note)){
-					musicArr.push(currPlat.note);
+				if(!(currPlat.note ===  'DISPLAY')){
+					if (!musicArr.includes(currPlat.note)) {
+						musicArr.push(currPlat.note);
+					}
+					count += 1;
 				}
 			}
 			if (isOnGround(gamePiece, currPlat) && this.speedY >= 0) {
@@ -295,7 +302,9 @@ function component(width, height, color) {
 					if (!isPlaying) {
 						currentId = currPlat.id;
 					}
-					doClear = false;
+					if (!(currPlat.note ===  'DISPLAY' && count == 0)){
+						doClear = false;
+					}
 					isPlaying = true;
 				}
 			} else {
@@ -312,7 +321,7 @@ function component(width, height, color) {
 		}
 		
 		musicArr.sort();
-		
+		console.log("MA: "+musicArr.toString() + " PMA: " + prevMusicArr.toString());
 		if(isPlaying && musicArr.toString() != prevMusicArr.toString()){
 			synth.triggerRelease(prevMusicArr);
 			synth.triggerAttack(musicArr);
@@ -324,6 +333,7 @@ function component(width, height, color) {
 		}
 		
 		if (doClear) {
+			count = 0;
 			for (i = 0; i < platforms.length && platforms[i].x < canvas.width; i++) {
 				platforms[i].setColor(false);
 			}
@@ -403,6 +413,7 @@ function generatePlatforms(array) {
 }
 
 // Determine platforms that are too high to jump to; give jump boost before those platforms
+// Also check for platforms that are too far apart
 function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
 		var c = 1;
@@ -412,6 +423,11 @@ function checkPlatforms() {
 		if (platforms[i].y - platforms[i+c].y > 90) {
 			incJumpLocs.push(platforms[i].id);
 			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+c].y) / -50);
+		}
+	// Delete if any problems
+		if (platforms[i+1].x - (platforms[i].x + platforms[i].width) > 150 && platforms[i+1].x - (platforms[i].x + platforms[i].width) < 500) {
+			var dif = (platforms[i+1].x - 20)-(platforms[i].x + platforms[i].width + 20);
+			platforms.push(new generatePlatform(false, platforms[i].x + platforms[i].width + 20, (platforms[i].y+platforms[i+1].y)/2, dif, 30, 'DISPLAY'));
 		}
 	}
 }
@@ -435,8 +451,12 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.draw = function() {
 		ctx = gameArea.context;
   
-		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
-		if (this.gradOne) {
+		var grd=ctx.createLinearGradient(this.width / 2, this.y, this.width / 2, this.y + 30);
+		if (!givePoint) {
+			grd.addColorStop(0, "red");
+			grd.addColorStop(1, "red");
+		}
+		else if (this.gradOne) {
 			ctx.shadowBlur = 20;
 			ctx.shadowColor = "yellow";
 			grd.addColorStop(0,"gold");
@@ -502,12 +522,12 @@ function win() {
 	synth.triggerRelease(prevMusicArr);
 	gamePiece.y = -50;
 	window.cancelAnimationFrame(animationId);
+	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
 	document.getElementsByClassName("modal-header")[0].className += " win";
 	document.getElementsByClassName("modal-content")[0].className += " win";
 	document.getElementById("EndTitle").innerHTML = "Song Complete!";
-	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + hitPlats/totalPlats*100 + "</p>";
-	
-	
+	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
+
 	$("#Score").modal('show');
 	playVictory();
 	playThrough = 0;
@@ -516,10 +536,11 @@ function win() {
 // End game
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementsByClassName("modal-header")[0].className += " lose";
+	var perc = totalPlats == 0 ? 100 : (hitPlats/totalPlats*100).toFixed(2);
+	document.getElementsByClassName("modal-er")[0].className += " lose";
 	document.getElementsByClassName("modal-content")[0].className += " lose";
 	document.getElementById("EndTitle").innerHTML = "Game Over";
-	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p>";
+	document.getElementById('content').innerHTML = " <p>Score: " + score + "<\p><p>Accuracy: " + perc + "</p>";
 	$("#Score").modal('show');
 }
 
