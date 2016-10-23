@@ -73,6 +73,9 @@ html {
 #Title {
 	text-align: right;
 	padding-right: 10px;
+	padding-bottom: 70px;
+	margin-top: -80px;
+	font-family: script;
 }
 
 .centered {

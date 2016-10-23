@@ -80,7 +80,7 @@ function playVictory() {
 function handleFile(files) {
 	if (files.length > 0){
 		var file = files[0];
-		document.getElementById('Title').innerHTML = '<h4>' + "Now playing - " + file.name.split(".")[0] + '</h4>';
+		document.getElementById('Title').innerHTML = '<h3>' + "Now playing - " + file.name.split(".")[0] + '</h3>';
 		parseFile(file);
 	}
 	dropZone.style.display = 'none';
@@ -94,7 +94,7 @@ function handleFileSelect(evt) {
 	var files = evt.dataTransfer.files;
 	if (files.length > 0){
 		var file = files[0];
-		document.getElementById('Title').innerHTML = '<h4>' + "Now playing - " + file.name.split(".")[0] + '</h4>';
+		document.getElementById('Title').innerHTML = '<h3>' + "Now playing - " + file.name.split(".")[0] + '</h3>';
 		parseFile(file);
 	}
 	dropZone.style.display = 'none';
@@ -243,6 +243,8 @@ function component(width, height, color) {
 		ctx.shadowColor = this.color;
 		ctx.fill();
 		ctx.shadowBlur = 0;
+
+		ctx.fillStyle = 'black';
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 30, 30);
 		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 30, 55);
