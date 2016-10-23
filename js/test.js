@@ -12,6 +12,8 @@ var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
 var animationId;
+var incJumpLocs = [];
+var incJumpVal = [];
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -125,7 +127,17 @@ var gameArea = {
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
 		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
-		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
+			if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
+			var jumpBoost = false;
+			var index = -1;
+			for (i = 0; i < incJumpLocs.length; i++) {
+				if (gamePiece.onTile == incJumpLocs[i]) {
+					jumpBoost = true;
+					index = i;
+				}
+			}
+			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
+		}
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
@@ -258,7 +270,7 @@ function generatePlatforms(array) {
 	for(i = 0; i < array.length; i++) {
 		var random = parseInt(Math.random()*5);
 		
-		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
+		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 200 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
 	platforms.sort(function(a, b) {
@@ -277,7 +289,7 @@ function checkPlatforms() {
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
-	this.id = parseInt(Math.random()*12424121);
+	this.id = parseInt(Math.random()*5000);
 	this.givePoint = givePoint;
 	this.x = x;
 	this.y = y;
