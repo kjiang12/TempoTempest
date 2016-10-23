@@ -228,9 +228,6 @@ function component(width, height, color) {
 		ctx.shadowBlur = 10;
 		ctx.shadowColor = this.color;
 		ctx.fill();
-		//ctx.stroke();
-        //ctx.fillRect(this.x, this.y, this.width, this.height);
-		//ctx.fillStyle = "black";
 		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 30, 30);
@@ -383,6 +380,8 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 			grd.addColorStop(0,"yellow");
 			grd.addColorStop(1,"white");
 		} else if (!this.touched) {
+			ctx.shadowBlur = 10;
+			ctx.shadowColor = "white";
 			grd.addColorStop(0, "black");
 			grd.addColorStop(1, "black");
 		} else if (this.touched) {
