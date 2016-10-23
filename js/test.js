@@ -15,6 +15,8 @@ var animationId;
 var incJumpLocs = [];
 var incJumpVal = [];
 var flagObject;
+var musicArr = [];
+var prevMusicArr = [];
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -25,7 +27,8 @@ window.onload = function(){
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
-	synth = new Tone.Synth().toMaster();
+	//synth = new Tone.Synth().toMaster();
+	synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
 	playNote();
 	//startGame();
 }
@@ -206,27 +209,42 @@ function component(width, height, color) {
         this.y += this.speedY * dt; 
 		
 		this.onGround = false;
-		var doClear = true;
+		var doClear = true
 		for (i = 0; i < platforms.length; i++) {
-			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
+			var currPlat = platforms[i];
+			if(this.x < currPlat.x + currPlat.width && this.x > currPlat.x){
+				if(!musicArr.includes(currPlat.note)){
+					musicArr.push(currPlat.note);
+				}
+			}
+			if (isOnGround(gamePiece, currPlat) && this.speedY >= 0) {
 				this.onGround = true;
-				this.onTile = platforms[i].id;
-				platforms[i].setColor(true);
-				if (platforms[i].givePoint) {
+				this.onTile = currPlat.id;
+				currPlat.setColor(true);
+				if (currPlat.givePoint) {
 					score += 1;
-					if (platforms[i].id != currentId) {
+					if (currPlat.id != currentId) {
 						isPlaying = false;
 					}
 					if (!isPlaying) {
-						synth.triggerAttack(platforms[i].note);
-						currentId = platforms[i].id;
+						currentId = currPlat.id;
 					}
 					doClear = false;
 					isPlaying = true;
 				}
 			} else {
-				platforms[i].setColor(false);
+				currPlat.setColor(false);
 			}
+		}
+		
+		musicArr.sort();
+		
+		if(isPlaying){
+			if(musicArr.toString() != prevMusicArr.toString()){
+				synth.triggerRelease(prevMusicArr);
+			}
+			synth.triggerAttack(musicArr);
+			prevMusicArr = musicArr.slice();
 		}
 		
 		if (gamePiece.x > flagObject.x) {
@@ -234,9 +252,11 @@ function component(width, height, color) {
 		}
 		
 		if (doClear) {
-			synth.triggerRelease();
+			synth.triggerRelease(prevMusicArr);
 			this.onTile = -1;
 			isPlaying = false;
+			prevMusicArr =  [];
+			musicArr = [];
 		}
 		
 		if (this.y + this.height > canvas.height) {
