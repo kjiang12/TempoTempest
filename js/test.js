@@ -12,8 +12,6 @@ var maxGap = 100; // Max jump height
 var isPlaying = false;
 var currentId = 0;
 var animationId;
-var incJumpLocs = [];
-var incJumpVal = [];
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -23,7 +21,7 @@ window.onload = function(){
 	dropZone = document.getElementById('drop_zone');
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
-	gamePiece = new component(20, 20, "orangered");
+	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
 	playNote();
 	//startGame();
@@ -69,9 +67,10 @@ function parseFile(file){
 	var reader = new FileReader();
 	reader.onload = function(e){
 		var display = MidiConvert.parse(e.target.result).tracks
-		//window.alert(JSON.stringify(display));
-		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
 		
+		var partsData = MidiConvert.parse(e.target.result).tracks[1]["notes"];
+		//window.alert(JSON.stringify(partsData));
+			//window.alert(JSON.stringify(partsData.length));
 		parseNotes(partsData);
 	};
 	reader.readAsBinaryString(file);
@@ -79,7 +78,7 @@ function parseFile(file){
 	
 function parseNotes(notes){
 	var array = [];
-	for (i = 0; i < notes.length; i+=4){
+	for (i = 0; i < notes.length; i++){
 		array.push([notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name]);
 	}
 
@@ -94,10 +93,9 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	incJumpLocs = [];
-	incJumpVal = [];
 	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
 	generatePlatforms(noteArray);
+
 	gameArea.keys = [];
 	gameArea.start();
 }
@@ -127,17 +125,7 @@ var gameArea = {
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
 		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
-		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
-			var jumpBoost = false;
-			var index = -1;
-			for (i = 0; i < incJumpLocs.length; i++) {
-				if (gamePiece.onTile == incJumpLocs[i]) {
-					jumpBoost = true;
-					index = i;
-				}
-			}
-			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
-		}
+		if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {gamePiece.speedY = -4; }
 		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
@@ -154,6 +142,7 @@ var gameArea = {
 			movePlatforms(platforms, -.9);
 			gamePiece.color = "red";
 		}
+		
 		
 		for (i = 0; i < platforms.length; i++) {
 			platforms[i].update(dt);
@@ -179,22 +168,15 @@ function component(width, height, color) {
     this.x = (canvas.width-this.width)/2;
     this.y = 120; 
 	this.color = color;
-	this.onTile = -1;
     this.draw = function() {
         ctx = gameArea.context;
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.height, 0, 2 * Math.PI, false);
-		var grad = ctx.createRadialGradient(this.x, this.y, this.height/4, this.x, this.y, this.height);
-		grad.addColorStop(0, "white");
-		grad.addColorStop(1, this.color);
-        ctx.fillStyle = grad;
-		ctx.shadowBlur = 10;
-		ctx.shadowColor = this.color;
+        ctx.fillStyle = this.color;
 		ctx.fill();
 		//ctx.stroke();
         //ctx.fillRect(this.x, this.y, this.width, this.height);
 		//ctx.fillStyle = "black";
-		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 10, 30);
 		
@@ -207,7 +189,6 @@ function component(width, height, color) {
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
-				this.onTile = platforms[i].id;
 				platforms[i].setColor(true);
 				if (platforms[i].givePoint) {
 					score += 1;
@@ -228,7 +209,6 @@ function component(width, height, color) {
 		
 		if (doClear) {
 			synth.triggerRelease();
-			this.onTile = -1;
 			isPlaying = false;
 		}
 		
@@ -272,28 +252,15 @@ function deletePlatforms(arr) {
 function generatePlatforms(array) {
 //notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name
 	for(i = 0; i < array.length; i++) {
-		var random = parseInt(Math.random()*20);
+		var random = parseInt(Math.random()*5);
 		
-		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], (array[i][0] * 10) - 300 - random * 10, array[i][2] * 150, array[i][3], array[i][4]));
+		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 100 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
-	platforms.sort(function(a, b) {
-		return a.x - b.x;
-	});
-	checkPlatforms();
-}
-
-function checkPlatforms() {
-	for (i = 0; i < platforms.length - 1; i++) {
-		if (platforms[i].y - platforms[i+1].y > 90) {
-			incJumpLocs.push(platforms[i].id);
-			incJumpVal.push(-3 + (platforms[i].y - platforms[i+1].y) / -50);
-		}
-	}
 }
 
 function generatePlatform(givePoint, x, y, width, volume, note) {
-	this.id = parseInt(Math.random()*5000);
+	this.id = parseInt(Math.random()*12424121);
 	this.givePoint = givePoint;
 	this.x = x;
 	this.y = y;
@@ -309,6 +276,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.draw = function() {
 		ctx = gameArea.context;
 		
+  
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
 		if (this.gradOne) {
 			grd.addColorStop(0,"rgb("+parseInt(Math.random()*255)+","+parseInt(Math.random()*255)+","+parseInt(Math.random()*255+")"));
