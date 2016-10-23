@@ -1,22 +1,37 @@
+// Circle
 var gamePiece;
+// Game window
 var canvas;
+// File drop area
 var dropZone;
-var currTime = 0;
-var prevTime = 0;
-var startTime = 0;
+// Times
+var currTime = 0, prevTime = 0, startTime = 0;
+// Int
 var score;
+// Array of platforms
 var platforms;
+// Array of notes
 var noteArray;
+// Synth
 var synth;
-var maxGap = 100; // Max jump height
+// Max jump height
+var maxGap = 100;
+// Song is currently playings
 var isPlaying = false;
+// ID of platform the circle is on
 var currentId = 0;
+// ID of animation
 var animationId;
+// Boost for platforms that are too high
 var incJumpLocs = [];
 var incJumpVal = [];
+// End flag
 var flagObject;
+// Synthesizer stuff
 var musicArr = [];
 var prevMusicArr = [];
+// Calculating percentage hit
+var totalPlats = 0; hitPlats = 0;
 
 window.onload = function(){
 	gameIsRunning = false;
@@ -38,6 +53,7 @@ function restartGame(){
 	startGame();
 }
 
+// Intro song
 function playNote() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
@@ -49,12 +65,7 @@ function playNote() {
 	chord.triggerRelease(["G3", "G4", "B3", "D4"], 7);
 }
 
-function playVictory() {
-	synth.triggerAttackRelease(["C4", "E4", "G3"], .5);
-	synth.triggerAttackRelease(["D4", "F#4", "A3"], 2.30);
-	synth.triggerAttackRelease(["G4", "B3", "D4"], 4.05);
-}
-
+// Winning song
 function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
 	chord.triggerAttack(["C4"], 0.5);
@@ -125,6 +136,7 @@ function parseNotes(notes){
 	startGame();
 }
 
+// Begin the game, reset data
 function startGame() {
 	gamePiece.restart();
 	currTime = 0;
@@ -141,6 +153,7 @@ function startGame() {
 	gameArea.start();
 }
 		
+// Create game area
 var gameArea = {
 	start : function() {
 		this.context = canvas.getContext("2d");
@@ -153,9 +166,11 @@ var gameArea = {
         })
 		gameArea.run();
 	},
+	// For redrawing
 	clear : function(){
 		this.context.clearRect(0, 0, canvas.width, canvas.height);
 	},
+	// Periodically called to update the area
 	update : function(dt) {
 		//Clear screen
 		gameArea.clear();
@@ -207,8 +222,9 @@ var gameArea = {
 		gameArea.update(dt);
 		currTime = now;	
 	}
-}
+} // End game area
 
+// Circle
 function component(width, height, color) {
     this.width = width;
     this.height = height;
@@ -225,15 +241,17 @@ function component(width, height, color) {
 		var grad = ctx.createRadialGradient(this.x, this.y, this.height/4, this.x, this.y, this.height);
 		grad.addColorStop(0, "#f6ff96");
 		grad.addColorStop(1, this.color);
-        ctx.fillStyle = grad;
+        ctx.fillStyle = "white";
 		ctx.shadowBlur = 30;
 		ctx.shadowColor = this.color;
 		ctx.fill();
 		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 30, 30);
+		ctx.fillText(totalPlats == 0 ? 0 : hitPlats/totalPlats * 100, 30, 55);
 		
     }
+	// Periodically called to update the circle
     this.update = function(dt) {
         this.y += this.speedY * dt; 
 		
@@ -316,8 +334,9 @@ function component(width, height, color) {
 		gamePiece.onGround = true;
 		score = 0;
 	}
-}
+} // End circle
 
+// Return true if the circle is on a platform
 function isOnGround(myPiece, platform) {
 	if (myPiece.x + myPiece.width < platform.x || myPiece.x > platform.x + platform.width) {return false; }
 	if (myPiece.y + myPiece.height >= platform.y && myPiece.y + myPiece.height <= platform.y + platform.height) {
@@ -327,19 +346,27 @@ function isOnGround(myPiece, platform) {
 	return false;
 }
 
+// Shift platforms to the left
 function movePlatforms(arr, spd) {
 	for (i = 0; i < arr.length; i++) {
 		platforms[i].x += spd;
 	}
 }
 
+// Remove platforms that went off screen to the left
 function deletePlatforms(arr) {
 	for (i = arr.length - 1; i >= 0; i--) {
 		if (platforms[i].x + platforms[i].width < 0) {
+			if (platforms[i].touched) {
+				hitPlats++;
+			}
+			totalPlats++;
 			arr.splice(i, 1);
 		}
 	}
 }
+
+// Create platforms from array of midi data
 function generatePlatforms(array) {
 //notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name
 	for(i = 0; i < array.length; i++) {
@@ -364,6 +391,7 @@ function generatePlatforms(array) {
 	checkPlatforms();
 }
 
+// Determine platforms that are too high to jump to; give jump boost before those platforms
 function checkPlatforms() {
 	for (i = 0; i < platforms.length - 1; i++) {
 		var c = 1;
@@ -377,6 +405,7 @@ function checkPlatforms() {
 	}
 }
 
+// Platform object
 function generatePlatform(givePoint, x, y, width, volume, note) {
 	this.id = parseInt(Math.random()*5000);
 	this.givePoint = givePoint;
@@ -422,6 +451,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 	}
 }
 
+// Set flag at the end of the map
 function generateFlag(x,y) {
 	this.x = x;
 	this.y = y;
@@ -448,6 +478,7 @@ function generateFlag(x,y) {
 	}
 }
 
+// Return array of platforms that are vertical to the circle
 function getVertical(x, width) {
 	var counter = 0;
 	var ret = [];
@@ -459,17 +490,19 @@ function getVertical(x, width) {
 	return ret;
 }
 
+// Player win
 function win() {
 	synth.triggerRelease(prevMusicArr);
 	gamePiece.y = -50;
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p >Level Complete!\nScore = " + score + "<\p>";
+	document.getElementById('content').innerHTML = "<p >Level Complete!\tScore = " + score + "\tAccuracy: " + hitPlats/totalPlats*100 + "<\p>";
 	$("#Score").modal('show');
 	playVictory();
 }
 
+// End game
 function gameOver() {
 	window.cancelAnimationFrame(animationId);
-	document.getElementById('content').innerHTML = "<p >Game over\nScore = " + score + "<\p>";
+	document.getElementById('content').innerHTML = "<p >Game over\tScore = " + score + "\tAccuracy: " + hitPlats/totalPlats*100 + "<\p>";
 	$("#Score").modal('show');
 }
