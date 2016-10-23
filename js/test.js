@@ -279,7 +279,7 @@ function generatePlatforms(array) {
 	for(i = 0; i < array.length; i++) {
 		var random = parseInt(Math.random()*5);
 		
-		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 350 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 200, array[i][3], array[i][4]));
+		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 270 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
 	}
 
 	platforms.sort(function(a, b) {
@@ -351,7 +351,7 @@ function generateFlag(x,y) {
 			ctx.drawImage(flag, this.x, this.y);
 		} else {
 			flag.onload = function(){
-				ctx.drawImage(this.image, this.x, this.y);
+				ctx.drawImage(this.flag, this.x, this.y);
 			}
 		}
 		
