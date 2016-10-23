@@ -67,6 +67,16 @@ function playVictory() {
 	chord.triggerRelease(["C4", "E4", "G4"], 2.25);
 }
 
+function handleFile(files) {
+	if (files.length > 0){
+		var file = files[0];
+		document.getElementById('Title').innerHTML = '<h4>' + "Now playing - " + file.name.split(".")[0] + '</h4>';
+		parseFile(file);
+	}
+	dropZone.style.display = 'none';
+	canvas.style.display = 'inline';
+ }
+ 
 function handleFileSelect(evt) {
     evt.stopPropagation();
     evt.preventDefault();
@@ -79,7 +89,7 @@ function handleFileSelect(evt) {
 	}
 	dropZone.style.display = 'none';
 	canvas.style.display = 'inline';
- }
+}
 
 function handleDragOver(evt) {
 	evt.stopPropagation();
