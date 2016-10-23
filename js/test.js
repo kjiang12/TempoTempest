@@ -28,7 +28,7 @@ window.onload = function(){
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(20, 20, "orangered");
 	//synth = new Tone.Synth().toMaster();
-	synth = new Tone.PolySynth(4, Tone.Synth).toMaster();
+	synth = new Tone.PolySynth(4, Tone.AMSynth).toMaster();
 	playNote();
 }
 
@@ -306,7 +306,7 @@ function generatePlatforms(array) {
 		if (y > canvas.height) {
 			y = canvas.height - 50;
 		}
-		var width = array[i][2] * 150;
+		var width = array[i][2] * 230;
 		var volume = array[i][3];
 		var note = array[i][4];
 		platforms.push(new generatePlatform(true, x, y, width, volume, note));
