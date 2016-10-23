@@ -26,7 +26,6 @@ window.onload = function(){
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(30, 30, "orangered");
 	synth = new Tone.Synth().toMaster();
-	playNote();
 	//startGame();
 }
 
@@ -34,7 +33,7 @@ function restartGame(){
 	$("#Score").modal('hide');
 	startGame();
 }
-function playNote() {
+function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster()
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
 	chord.triggerRelease(["C4", "E4", "G3"], 2.25);
@@ -99,8 +98,9 @@ function startGame() {
 	startTime = Date.now();
 	score = 0;
 	platforms = [];
-	platforms.push(new generatePlatform(false, canvas.width/2, 180, 300 + noteArray[0][1] * 100, 30, 'E1'));
+	platforms.push(new generatePlatform(false, canvas.width/2, 180, 100, 30, 'E1'));
 	generatePlatforms(noteArray);
+	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	
 	gameArea.keys = [];
@@ -290,8 +290,18 @@ function generatePlatforms(array) {
 //notes[i].midi,notes[i].time,notes[i].duration,notes[i].velocity,notes[i].name
 	for(i = 0; i < array.length; i++) {
 		var random = parseInt(Math.random()*5);
-		
-		platforms.push(new generatePlatform(true, canvas.width/2 + 300 + 200 * array[i][1], canvas.height - array[i][0] * 20 + 1000, array[i][2] * 150, array[i][3], array[i][4]));
+		var x = canvas.width/2 + 300 + 300 * array[i][1];
+		var y = canvas.height - array[i][0] * 20 + 1000;
+		if (y < 50) {
+			y = 50;
+		}
+		if (y > canvas.height) {
+			y = canvas.height - 50;
+		}
+		var width = array[i][2] * 150;
+		var volume = array[i][3];
+		var note = array[i][4];
+		platforms.push(new generatePlatform(true, x, y, width, volume, note));
 	}
 
 	platforms.sort(function(a, b) {
@@ -363,7 +373,7 @@ function generateFlag(x,y) {
 			ctx.drawImage(flag, this.x, this.y);
 		} else {
 			flag.onload = function(){
-				ctx.drawImage(this.image, this.x, this.y);
+				ctx.drawImage(this.flag, this.x, this.y);
 			}
 		}
 		
@@ -373,6 +383,9 @@ function generateFlag(x,y) {
 }
 
 function win() {
+	synth.triggerRelease();
+	gamePiece.y = -50;
+	playVictory();
 	window.cancelAnimationFrame(animationId);
 	document.getElementById('content').innerHTML = "<p >Level Complete!\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
