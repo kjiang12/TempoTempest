@@ -166,17 +166,24 @@ function component(width, height, color) {
     this.speedY = 0;
 	this.onGround = true;
     this.x = (canvas.width-this.width)/2;
-    this.y = 110; 
+    this.y = 120; 
 	this.color = color;
+	this.onTile = -1;
     this.draw = function() {
         ctx = gameArea.context;
 		ctx.beginPath();
 		ctx.arc(this.x, this.y, this.height, 0, 2 * Math.PI, false);
-        ctx.fillStyle = this.color;
+		var grad = ctx.createRadialGradient(this.x, this.y, this.height/4, this.x, this.y, this.height);
+		grad.addColorStop(0, "white");
+		grad.addColorStop(1, this.color);
+        ctx.fillStyle = grad;
+		ctx.shadowBlur = 10;
+		ctx.shadowColor = this.color;
 		ctx.fill();
 		//ctx.stroke();
         //ctx.fillRect(this.x, this.y, this.width, this.height);
 		//ctx.fillStyle = "black";
+		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
 		ctx.fillText(score, 10, 30);
 		
@@ -189,6 +196,7 @@ function component(width, height, color) {
 		for (i = 0; i < platforms.length; i++) {
 			if (isOnGround(gamePiece, platforms[i]) && this.speedY >= 0) {
 				this.onGround = true;
+				this.onTile = platforms[i].id;
 				platforms[i].setColor(true);
 				if (platforms[i].givePoint) {
 					score += 1;
@@ -209,6 +217,7 @@ function component(width, height, color) {
 		
 		if (doClear) {
 			synth.triggerRelease();
+			this.onTile = -1;
 			isPlaying = false;
 		}
 		
