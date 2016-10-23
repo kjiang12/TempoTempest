@@ -18,7 +18,7 @@ var synth;
 var maxGap = 100;
 // Song is currently playings
 var isPlaying = false;
-// ID of platform the circle is on
+// ID of platform that is playing a note
 var currentId = 0;
 // ID of animation
 var animationId;
@@ -276,9 +276,11 @@ function component(width, height, color) {
 		for (i = 0; i < platforms.length; i++) {
 			var currPlat = platforms[i];
 			if(this.x < currPlat.x + currPlat.width && this.x > currPlat.x){
-				if(!musicArr.includes(currPlat.note) && !(currPlat.note ===  'DISPLAY')){
-					musicArr.push(currPlat.note);
-					count++;
+				if(!(currPlat.note ===  'DISPLAY')){
+					if (!musicArr.includes(currPlat.note)) {
+						musicArr.push(currPlat.note);
+					}
+					count += 1;
 				}
 			}
 			if (isOnGround(gamePiece, currPlat) && this.speedY >= 0) {
@@ -319,7 +321,7 @@ function component(width, height, color) {
 		}
 		
 		musicArr.sort();
-		console.log(musicArr);
+		console.log("MA: "+musicArr.toString() + " PMA: " + prevMusicArr.toString());
 		if(isPlaying && musicArr.toString() != prevMusicArr.toString()){
 			synth.triggerRelease(prevMusicArr);
 			synth.triggerAttack(musicArr);
@@ -423,7 +425,7 @@ function checkPlatforms() {
 			incJumpVal.push(-2.5 + (platforms[i].y - platforms[i+c].y) / -50);
 		}
 	// Delete if any problems
-		if (platforms[i+1].x - (platforms[i].x + platforms[i].width) > 100 && platforms[i+1].x - (platforms[i].x + platforms[i].width) < 500) {
+		if (platforms[i+1].x - (platforms[i].x + platforms[i].width) > 150 && platforms[i+1].x - (platforms[i].x + platforms[i].width) < 500) {
 			var dif = (platforms[i+1].x - 20)-(platforms[i].x + platforms[i].width + 20);
 			platforms.push(new generatePlatform(false, platforms[i].x + platforms[i].width + 20, (platforms[i].y+platforms[i+1].y)/2, dif, 30, 'DISPLAY'));
 		}
