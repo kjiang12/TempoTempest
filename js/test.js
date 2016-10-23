@@ -136,7 +136,7 @@ var gameArea = {
 		gamePiece.speedY += (gamePiece.onGround ? -gamePiece.speedY : 0.239);
 		gamePiece.speedY = Math.min(gamePiece.speedY, 2);
 		
-			if (gameArea.keys && gameArea.keys[32] && gamePiece.onGround) {
+			if (gameArea.keys && gameArea.keys[90] && gamePiece.onGround) {
 			var jumpBoost = false;
 			var index = -1;
 			for (i = 0; i < incJumpLocs.length; i++) {
@@ -147,7 +147,7 @@ var gameArea = {
 			}
 			gamePiece.speedY = jumpBoost ? incJumpVal[index] : -4;
 		}
-		if (gameArea.keys && gameArea.keys[88] && !gamePiece.onGround) {
+		if (gameArea.keys && gameArea.keys[77] && !gamePiece.onGround) {
 			while (!gamePiece.onGround && !(gamePiece.y + gamePiece.height > canvas.height)) {
 				gamePiece.speedY = 1;
 				gamePiece.update(dt);
