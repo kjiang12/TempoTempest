@@ -296,7 +296,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
   
 		var grd=ctx.createLinearGradient(this.width / 2,this.y,this.width / 2,this.y + 30);
 		if (this.gradOne) {
-			ctx.shadowBlur = 5;
+			ctx.shadowBlur = 20;
 			ctx.shadowColor = "yellow";
 			grd.addColorStop(0,"yellow");
 			grd.addColorStop(1,"white");
@@ -306,7 +306,7 @@ function generatePlatform(givePoint, x, y, width, volume, note) {
 		}
 		ctx.fillStyle = grd;
         ctx.fillRect(this.x, this.y, this.width, this.height);
-		ctx.shadowBlur = 0;
+		ctx.shadowBlur = 5;
 	}
 	this.setColor = function(gradOne) {
 		this.gradOne = gradOne;
