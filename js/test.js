@@ -37,6 +37,7 @@ function restartGame(){
 	$("#Score").modal('hide');
 	startGame();
 }
+
 function playNote() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
 	chord.triggerAttack(["C4", "E4", "G3"], .5);
@@ -46,7 +47,13 @@ function playNote() {
 	chord.triggerAttack(["G4", "B3", "D4"], 4.05);
 	chord.triggerAttack(["G3"], 6);
 	chord.triggerRelease(["G3", "G4", "B3", "D4"], 7);
-};
+}
+
+function playVictory() {
+	synth.triggerAttackRelease(["C4", "E4", "G3"], .5);
+	synth.triggerAttackRelease(["D4", "F#4", "A3"], 2.30);
+	synth.triggerAttackRelease(["G4", "B3", "D4"], 4.05);
+}
 
 function playVictory() {
 	var chord = new Tone.PolySynth(3, Tone.AMSynth).toMaster();
@@ -216,7 +223,7 @@ function component(width, height, color) {
 		//ctx.fillStyle = "black";
 		ctx.shadowBlur = 0;
 		ctx.font="20px Georgia";
-		ctx.fillText(score, 10, 30);
+		ctx.fillText(score, 30, 30);
 		
     }
     this.update = function(dt) {
@@ -408,12 +415,12 @@ function generateFlag(x,y) {
 }
 
 function win() {
-	synth.triggerRelease();
+	synth.triggerRelease(prevMusicArr);
 	gamePiece.y = -50;
-	playVictory();
 	window.cancelAnimationFrame(animationId);
 	document.getElementById('content').innerHTML = "<p >Level Complete!\nScore = " + score + "<\p>";
 	$("#Score").modal('show');
+	playVictory();
 }
 
 function gameOver() {
