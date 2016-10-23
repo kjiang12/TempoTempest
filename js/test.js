@@ -150,7 +150,7 @@ function startGame() {
 	generatePlatforms(noteArray);
 	platforms[0].width = platforms[1].x - (canvas.width / 2) - 100;
 	if (playThrough != 0) {
-		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x, 30, 'DISPLAY'));
+		platforms.push(new generatePlatform(true, 0, 0, platforms[platforms.length - 1].x + 500, 30, 'DISPLAY'));
 	}
 	flagObject = new generateFlag(platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - 128, platforms[platforms.length - 1].y - 150);
 	gameArea.keys = [];
