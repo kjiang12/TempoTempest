@@ -1,4 +1,5 @@
 canvas {
+	background: url('../images/music-notes.jpg');
     border:5px groove #06719e;
 	border-radius: 5px;
 	padding-left: 0;
@@ -7,7 +8,6 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
-	background: url('../images/music-notes.jpg');
 }
 .container {
 	padding-left: 0;
