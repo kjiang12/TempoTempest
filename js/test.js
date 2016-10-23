@@ -44,7 +44,6 @@ window.onload = function(){
 	dropZone.addEventListener('dragover', handleDragOver, false);
 	dropZone.addEventListener('drop', handleFileSelect, false);
 	gamePiece = new component(20, 20, "yellow");
-	//synth = new Tone.Synth().toMaster();
 	synth = new Tone.PolySynth(4, Tone.AMSynth).toMaster();
 	playNote();
 }
